@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"log"
 	"quiz/models"
 	"quiz/temp"
 	"strconv"
@@ -14,14 +15,14 @@ type HostController struct {
 	beego.Controller
 }
 
-// @Title Create
+// @Title Post
 // @Description create object
-// @Param	body		body 	models.host	true		"The object content"
+// @Param	body		body 	temp.HostUpdate	true		"The object content"
 // @Success 200 {string} models.Host.Name
 // @Failure 403 body is empty
 // @router / [post]
 func (o *HostController) Post() {
-	var ob models.Host
+	var ob temp.HostUpdate
 	json.Unmarshal(o.Ctx.Input.RequestBody, &ob)
 	id := models.AddHost(ob)
 	o.Data["json"] = map[string]int{"Id": id}
@@ -30,13 +31,15 @@ func (o *HostController) Post() {
 
 // @Title Get
 // @Description find object by code
-// @Param	objectId		path 	string	true		"the code you want to get"
+// @Param	code		path 	string	true		"the code you want to get"
 // @Success 200 {code} models.Host
 // @Failure 403 :code is empty
 // @router /:code [get]
 func (o *HostController) Get() {
 	objectId := o.Ctx.Input.Param(":code")
+	log.Println(objectId)
 	code, err := strconv.Atoi(objectId)
+	log.Println(code)
 	if err == nil {
 		ob, err := models.GetOne(code)
 		if err != nil {
@@ -75,7 +78,7 @@ func (o *HostController) Put() {
 	var ob temp.HostUpdate
 	json.Unmarshal(o.Ctx.Input.RequestBody, &ob)
 
-	err := models.Update(code, &ob)
+	err = models.Update(code, &ob)
 	if err != nil {
 		o.Data["json"] = err.Error()
 	} else {
@@ -92,7 +95,11 @@ func (o *HostController) Put() {
 // @router /:objectId [delete]
 func (o *HostController) Delete() {
 	objectId := o.Ctx.Input.Param(":objectId")
-	models.Delete(objectId)
+	id, err := strconv.Atoi(objectId)
+	if err != nil {
+		o.Data["json"] = "wrong type"
+	}
+	models.Delete(id)
 	o.Data["json"] = "delete success!"
 	o.ServeJSON()
 }

@@ -19,7 +19,8 @@ type Host struct {
 func generateCode() int {
 	var r int
 	for {
-		r = rand.Intn(100000)
+		r = rand.Intn(900000)
+		r += 100000 - 1
 		if hosts[r] != nil {
 			continue
 		}
@@ -32,10 +33,13 @@ func init() {
 	hosts = make(map[int]*Host)
 }
 
-func AddHost(host Host) int {
-	host.Code = generateCode()
-	hosts[host.Code] = &host
-	return host.Code
+func AddHost(host temp.HostUpdate) int {
+	var h Host
+	h.Code = generateCode()
+	h.Name = host.Name
+	h.NumberOfParticipant = host.NumberOfParticipant
+	hosts[h.Code] = &h
+	return h.Code
 }
 
 func GetOne(code int) (object *Host, err error) {

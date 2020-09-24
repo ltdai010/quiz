@@ -2,7 +2,6 @@ package temp
 
 type QuizUpdate struct {
 	NumberOfQuestion int
-	QuestionList []*int
 }
 
 type HostUpdate struct {

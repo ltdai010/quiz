@@ -18,11 +18,10 @@ func init() {
 type Quiz struct {
 	Name string
 	NumberOfQuestion int
-	QuestionList []*int
 }
 
 type Question struct {
-	Id int
+	QuizName string
 	Question string
 	Choice1 string
 	Choice2 string
@@ -36,9 +35,16 @@ func AddQuiz(quiz Quiz) string {
 	return quiz.Name
 }
 
-func AddQuestions(name string, questions []*Question) string {
-	QuestList[name] = questions
-	return name
+func AddQuestions(name string, questions []Question) string {
+	if _, ok := QuizList[name]; ok {
+		var list []*Question
+		for _, i := range questions {
+			list = append(list, &i)
+		}
+		QuestList[name] = list
+		return name
+	}
+	return "not found"
 }
 
 func GetQuiz(name string) (u *Quiz, err error) {
@@ -52,10 +58,16 @@ func GetAllQuiz() map[string]*Quiz {
 	return QuizList
 }
 
+func GetAllQuestion(quizName string) ([]*Question, error) {
+	if list, ok := QuestList[quizName]; ok {
+		return list, nil
+	}
+	return nil, errors.New("quiz not exists")
+}
+
 func UpdateQuiz(name string, quiz *temp.QuizUpdate) (err error) {
-	if u, ok := QuizList[name]; ok {
-		u.NumberOfQuestion = quiz.NumberOfQuestion
-		u.QuestionList = quiz.QuestionList
+	if q, ok := QuizList[name]; ok {
+		q.NumberOfQuestion = quiz.NumberOfQuestion
 	} else {
 		return errors.New("quiz not found")
 	}

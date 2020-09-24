@@ -15,14 +15,14 @@ import (
 
 func init() {
 	ns := beego.NewNamespace("/v1",
-		beego.NSNamespace("/object",
+		beego.NSNamespace("/host",
 			beego.NSInclude(
 				&controllers.HostController{},
 			),
 		),
-		beego.NSNamespace("/user",
+		beego.NSNamespace("/quiz",
 			beego.NSInclude(
-				&controllers.UserController{},
+				&controllers.QuizController{},
 			),
 		),
 	)

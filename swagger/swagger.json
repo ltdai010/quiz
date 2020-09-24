@@ -1,0 +1,432 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "beego Test API",
+        "description": "beego has a very cool tools to autogenerate documents for your API",
+        "version": "1.0.0",
+        "termsOfService": "http://beego.me/",
+        "contact": {
+            "email": "astaxie@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "basePath": "/v1",
+    "paths": {
+        "/host/": {
+            "get": {
+                "tags": [
+                    "host"
+                ],
+                "description": "get all objects",
+                "operationId": "HostController.GetAll",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Host"
+                        }
+                    },
+                    "403": {
+                        "description": ":objectId is empty"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "host"
+                ],
+                "description": "create object",
+                "operationId": "HostController.Post",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The object content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/temp.HostUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} models.Host.Name"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/host/{code}": {
+            "get": {
+                "tags": [
+                    "host"
+                ],
+                "description": "find object by code",
+                "operationId": "HostController.Get",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "code",
+                        "description": "the code you want to get",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{code} models.Host"
+                    },
+                    "403": {
+                        "description": ":code is empty"
+                    }
+                }
+            }
+        },
+        "/host/{objectId}": {
+            "put": {
+                "tags": [
+                    "host"
+                ],
+                "description": "update the object",
+                "operationId": "HostController.Update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "objectId",
+                        "description": "The host you want to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/temp.HostUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Host"
+                        }
+                    },
+                    "403": {
+                        "description": ":objectId is empty"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "host"
+                ],
+                "description": "delete the object",
+                "operationId": "HostController.Delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "objectId",
+                        "description": "The objectId you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} delete success!"
+                    },
+                    "403": {
+                        "description": "objectId is empty"
+                    }
+                }
+            }
+        },
+        "/quiz/": {
+            "get": {
+                "tags": [
+                    "quiz"
+                ],
+                "description": "get all Users",
+                "operationId": "QuizController.GetAll",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Quiz"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "quiz"
+                ],
+                "description": "create users",
+                "operationId": "QuizController.Post",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for user content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Quiz"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{int} models.Quiz.Name"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/quiz/PostQuest": {
+            "post": {
+                "tags": [
+                    "quiz"
+                ],
+                "description": "post questions",
+                "operationId": "QuizController.PostQuestions",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for user content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Question"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} models.Question.QuizName"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/quiz/{name}": {
+            "get": {
+                "tags": [
+                    "quiz"
+                ],
+                "description": "get all questions",
+                "operationId": "QuizController.GetAllQuest",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "name",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Question"
+                        }
+                    },
+                    "403": {
+                        "description": ":name is not exist"
+                    }
+                }
+            }
+        },
+        "/quiz/{uid}": {
+            "get": {
+                "tags": [
+                    "quiz"
+                ],
+                "description": "get user by uid",
+                "operationId": "QuizController.Get",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "uid",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Quiz"
+                        }
+                    },
+                    "403": {
+                        "description": ":uid is empty"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "quiz"
+                ],
+                "description": "update the user",
+                "operationId": "QuizController.Update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "uid",
+                        "description": "The uid you want to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for user content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/temp.QuizUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} update done!"
+                    },
+                    "403": {
+                        "description": ":uid is not int"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "quiz"
+                ],
+                "description": "delete the user",
+                "operationId": "QuizController.Delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "uid",
+                        "description": "The uid you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} delete success!"
+                    },
+                    "403": {
+                        "description": "uid is empty"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Host": {
+            "title": "Host",
+            "type": "object",
+            "properties": {
+                "Code": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "NumberOfParticipant": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "models.Question": {
+            "title": "Question",
+            "type": "object",
+            "properties": {
+                "Choice1": {
+                    "type": "string"
+                },
+                "Choice2": {
+                    "type": "string"
+                },
+                "Choice3": {
+                    "type": "string"
+                },
+                "Choice4": {
+                    "type": "string"
+                },
+                "Question": {
+                    "type": "string"
+                },
+                "QuizName": {
+                    "type": "string"
+                },
+                "answer": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "models.Quiz": {
+            "title": "Quiz",
+            "type": "object",
+            "properties": {
+                "Name": {
+                    "type": "string"
+                },
+                "NumberOfQuestion": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "temp.HostUpdate": {
+            "title": "HostUpdate",
+            "type": "object",
+            "properties": {
+                "Name": {
+                    "type": "string"
+                },
+                "NumberOfParticipant": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "temp.QuizUpdate": {
+            "title": "QuizUpdate",
+            "type": "object",
+            "properties": {
+                "NumberOfQuestion": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "host",
+            "description": "Operations about host\n"
+        },
+        {
+            "name": "quiz",
+            "description": "Operations about Users\n"
+        }
+    ]
+}

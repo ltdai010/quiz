@@ -2,27 +2,42 @@ package controllers
 
 import (
 	"encoding/json"
-	"quiz/models"
-
 	"github.com/astaxie/beego"
+	"quiz/models"
+	"quiz/temp"
 )
 
 // Operations about Users
-type UserController struct {
+type QuizController struct {
 	beego.Controller
 }
 
-// @Title CreateUser
+// @Title Post
 // @Description create users
 // @Param	body		body 	models.Quiz	true		"body for user content"
-// @Success 200 {int} models.Quiz.Id
+// @Success 200 {int} models.Quiz.Name
 // @Failure 403 body is empty
 // @router / [post]
-func (u *UserController) Post() {
-	var user models.Quiz
-	json.Unmarshal(u.Ctx.Input.RequestBody, &user)
-	uid := models.AddQuiz(user)
-	u.Data["json"] = map[string]string{"uid": uid}
+func (u *QuizController) Post() {
+	var quiz models.Quiz
+	json.Unmarshal(u.Ctx.Input.RequestBody, &quiz)
+	name := models.AddQuiz(quiz)
+	u.Data["json"] = map[string]string{"Name": name}
+	u.ServeJSON()
+}
+
+
+// @Title PostQuestions
+// @Description post questions
+// @Param	body		body	models.Question	true		"body for user content"
+// @Success 200 {string} models.Question.QuizName
+// @Failure 403 body is empty
+// @router /PostQuest [post]
+func (u *QuizController) PostQuestions() {
+	var qt []models.Question
+	json.Unmarshal(u.Ctx.Input.RequestBody, &qt)
+	qname := models.AddQuestions(qt[0].QuizName, qt)
+	u.Data["json"] = map[string]string{"quizName": qname}
 	u.ServeJSON()
 }
 
@@ -30,9 +45,28 @@ func (u *UserController) Post() {
 // @Description get all Users
 // @Success 200 {object} models.Quiz
 // @router / [get]
-func (u *UserController) GetAll() {
+func (u *QuizController) GetAll() {
 	users := models.GetAllQuiz()
 	u.Data["json"] = users
+	u.ServeJSON()
+}
+
+// @Title GetAllQuest
+// @Description get all questions
+// @Param	name		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.Question
+// @Failure 403 :name is not exist
+// @router /:name [get]
+func (u *QuizController) GetAllQuest() {
+	name := u.GetString(":name")
+	if name != "" {
+		users, err := models.GetAllQuestion(name)
+		if err != nil {
+			u.Data["json"] = users
+		} else {
+			u.Data["json"] = err.Error()
+		}
+	}
 	u.ServeJSON()
 }
 
@@ -42,7 +76,7 @@ func (u *UserController) GetAll() {
 // @Success 200 {object} models.Quiz
 // @Failure 403 :uid is empty
 // @router /:uid [get]
-func (u *UserController) Get() {
+func (u *QuizController) Get() {
 	uid := u.GetString(":uid")
 	if uid != "" {
 		user, err := models.GetQuiz(uid)
@@ -58,20 +92,20 @@ func (u *UserController) Get() {
 // @Title Update
 // @Description update the user
 // @Param	uid		path 	string	true		"The uid you want to update"
-// @Param	body		body 	models.Quiz	true		"body for user content"
-// @Success 200 {object} models.Quiz
+// @Param	body		body 	temp.QuizUpdate	true		"body for user content"
+// @Success 200 {string} update done!
 // @Failure 403 :uid is not int
 // @router /:uid [put]
-func (u *UserController) Put() {
+func (u *QuizController) Put() {
 	uid := u.GetString(":uid")
 	if uid != "" {
-		var user models.Quiz
+		var user temp.QuizUpdate
 		json.Unmarshal(u.Ctx.Input.RequestBody, &user)
-		uu, err := models.UpdateQuiz(uid, &user)
+		err := models.UpdateQuiz(uid, &user)
 		if err != nil {
 			u.Data["json"] = err.Error()
 		} else {
-			u.Data["json"] = uu
+			u.Data["json"] = "update success"
 		}
 	}
 	u.ServeJSON()
@@ -83,37 +117,9 @@ func (u *UserController) Put() {
 // @Success 200 {string} delete success!
 // @Failure 403 uid is empty
 // @router /:uid [delete]
-func (u *UserController) Delete() {
+func (u *QuizController) Delete() {
 	uid := u.GetString(":uid")
 	models.DeleteQuiz(uid)
 	u.Data["json"] = "delete success!"
 	u.ServeJSON()
 }
-
-// @Title Login
-// @Description Logs user into the system
-// @Param	username		query 	string	true		"The username for login"
-// @Param	password		query 	string	true		"The password for login"
-// @Success 200 {string} login success
-// @Failure 403 user not exist
-// @router /login [get]
-func (u *UserController) Login() {
-	username := u.GetString("username")
-	password := u.GetString("password")
-	if models.Login(username, password) {
-		u.Data["json"] = "login success"
-	} else {
-		u.Data["json"] = "user not exist"
-	}
-	u.ServeJSON()
-}
-
-// @Title logout
-// @Description Logs out current logged in user session
-// @Success 200 {string} logout success
-// @router /logout [get]
-func (u *UserController) Logout() {
-	u.Data["json"] = "logout success"
-	u.ServeJSON()
-}
-
