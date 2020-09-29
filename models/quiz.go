@@ -1,8 +1,11 @@
 package models
 
 import (
+	"cloud.google.com/go/firestore"
 	"errors"
+	"log"
 	"quiz/temp"
+	"strconv"
 )
 
 var (
@@ -16,6 +19,7 @@ func init() {
 }
 
 type Quiz struct {
+	Creator string
 	Name string
 	NumberOfQuestion int
 }
@@ -23,28 +27,45 @@ type Quiz struct {
 type Question struct {
 	QuizName string
 	Question string
-	Choice1 string
-	Choice2 string
-	Choice3 string
-	Choice4 string
-	answer int
+	Choice1  string
+	Choice2  string
+	Choice3  string
+	Choice4  string
+	Answer   int
 }
 
 func AddQuiz(quiz Quiz) string {
-	QuizList[quiz.Name] = &quiz
+	_, err := client.Collection("quiz").Doc(quiz.Name).Set(ctx, map[string]interface{}{
+		"Name":    quiz.Name,
+		"NumberOfQuestion":   quiz.NumberOfQuestion,
+		"Creator": quiz.Creator,
+	})
+	if err != nil {
+		log.Printf("Failed adding alovelace: %v \n", err)
+	}
 	return quiz.Name
 }
 
 func AddQuestions(name string, questions []Question) string {
-	if _, ok := QuizList[name]; ok {
-		var list []*Question
-		for _, i := range questions {
-			list = append(list, &i)
+	for i, v := range questions {
+		num := strconv.Itoa(i)
+		_, err := client.Collection("quiz").Doc(name).Set(ctx, map[string]interface{}{
+			"Question": map[string]interface{}{
+				num: map[string]interface{}{
+					"Question": v.Question,
+					"Choice1" : v.Choice1,
+					"Choice2" : v.Choice2,
+					"Choice3" : v.Choice3,
+					"Choice4" : v.Choice4,
+					"Answer"  : v.Answer,
+				},
+			},
+		}, firestore.MergeAll)
+		if err != nil {
+			log.Printf("Failed adding alovelace: %v \n", err)
 		}
-		QuestList[name] = list
-		return name
 	}
-	return "not found"
+	return "done"
 }
 
 func GetQuiz(name string) (u *Quiz, err error) {
@@ -75,5 +96,9 @@ func UpdateQuiz(name string, quiz *temp.QuizUpdate) (err error) {
 }
 
 func DeleteQuiz(name string) {
-	delete(QuizList, name)
+	_, err := client.Collection("quiz").Doc(name).Delete(ctx)
+	if err != nil {
+		// Handle any errors in an appropriate way, such as returning them.
+		log.Printf("An error has occurred: %s", err)
+	}
 }

@@ -15,7 +15,59 @@
     },
     "basePath": "/v1",
     "paths": {
-        "/host/": {
+        "/host/DeleteAHost/{Id}": {
+            "delete": {
+                "tags": [
+                    "host"
+                ],
+                "description": "delete the object",
+                "operationId": "HostController.Delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "Id",
+                        "description": "The objectId you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} delete success!"
+                    },
+                    "403": {
+                        "description": "Id is empty"
+                    }
+                }
+            }
+        },
+        "/host/GetAHost/{code}": {
+            "get": {
+                "tags": [
+                    "host"
+                ],
+                "description": "find object by code",
+                "operationId": "HostController.Get",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "code",
+                        "description": "the code you want to get",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{code} models.Host"
+                    },
+                    "403": {
+                        "description": ":code is empty"
+                    }
+                }
+            }
+        },
+        "/host/GetALlHost": {
             "get": {
                 "tags": [
                     "host"
@@ -33,7 +85,9 @@
                         "description": ":objectId is empty"
                     }
                 }
-            },
+            }
+        },
+        "/host/PostHost": {
             "post": {
                 "tags": [
                     "host"
@@ -61,59 +115,7 @@
                 }
             }
         },
-        "/host/{Id}": {
-            "delete": {
-                "tags": [
-                    "host"
-                ],
-                "description": "delete the object",
-                "operationId": "HostController.Delete",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "Id",
-                        "description": "The objectId you want to delete",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} delete success!"
-                    },
-                    "403": {
-                        "description": "Id is empty"
-                    }
-                }
-            }
-        },
-        "/host/{code}": {
-            "get": {
-                "tags": [
-                    "host"
-                ],
-                "description": "find object by code",
-                "operationId": "HostController.Get",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "code",
-                        "description": "the code you want to get",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{code} models.Host"
-                    },
-                    "403": {
-                        "description": ":code is empty"
-                    }
-                }
-            }
-        },
-        "/host/{hostId}": {
+        "/host/UpdateAHost/{hostId}": {
             "put": {
                 "tags": [
                     "host"
@@ -151,7 +153,62 @@
                 }
             }
         },
-        "/quiz/": {
+        "/quiz/DeleteQuiz/{qId}": {
+            "delete": {
+                "tags": [
+                    "quiz"
+                ],
+                "description": "delete the user",
+                "operationId": "QuizController.Delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "qId",
+                        "description": "The uid you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} delete success!"
+                    },
+                    "403": {
+                        "description": "qId is empty"
+                    }
+                }
+            }
+        },
+        "/quiz/GetAQuiz/{id}": {
+            "get": {
+                "tags": [
+                    "quiz"
+                ],
+                "description": "get user by uid",
+                "operationId": "QuizController.Get",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Quiz"
+                        }
+                    },
+                    "403": {
+                        "description": ":id is empty"
+                    }
+                }
+            }
+        },
+        "/quiz/GetAll": {
             "get": {
                 "tags": [
                     "quiz"
@@ -166,30 +223,33 @@
                         }
                     }
                 }
-            },
-            "post": {
+            }
+        },
+        "/quiz/GetAllQuest/{name}": {
+            "get": {
                 "tags": [
                     "quiz"
                 ],
-                "description": "create users",
-                "operationId": "QuizController.Post",
+                "description": "get all questions",
+                "operationId": "QuizController.GetAllQuest",
                 "parameters": [
                     {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for user content",
+                        "in": "path",
+                        "name": "name",
+                        "description": "The key for staticblock",
                         "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Quiz"
-                        }
+                        "type": "string"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{int} models.Quiz.Name"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Question"
+                        }
                     },
                     "403": {
-                        "description": "body is empty"
+                        "description": ":name is not exist"
                     }
                 }
             }
@@ -222,13 +282,41 @@
                 }
             }
         },
-        "/quiz/{id}": {
+        "/quiz/PostQuiz": {
+            "post": {
+                "tags": [
+                    "quiz"
+                ],
+                "description": "create users",
+                "operationId": "QuizController.Post",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for user content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Quiz"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{int} models.Quiz.Name"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/quiz/SearchQuiz/{id}": {
             "get": {
                 "tags": [
                     "quiz"
                 ],
                 "description": "get user by uid",
-                "operationId": "QuizController.Get",
+                "operationId": "QuizController.Search",
                 "parameters": [
                     {
                         "in": "path",
@@ -251,68 +339,13 @@
                 }
             }
         },
-        "/quiz/{name}": {
-            "get": {
-                "tags": [
-                    "quiz"
-                ],
-                "description": "get all questions",
-                "operationId": "QuizController.GetAllQuest",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "name",
-                        "description": "The key for staticblock",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.Question"
-                        }
-                    },
-                    "403": {
-                        "description": ":name is not exist"
-                    }
-                }
-            }
-        },
-        "/quiz/{qId}": {
-            "delete": {
-                "tags": [
-                    "quiz"
-                ],
-                "description": "delete the user",
-                "operationId": "QuizController.Delete",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "qId",
-                        "description": "The uid you want to delete",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} delete success!"
-                    },
-                    "403": {
-                        "description": "qId is empty"
-                    }
-                }
-            }
-        },
-        "/quiz/{uid}": {
+        "/quiz/UpdateQuiz/{uid}": {
             "put": {
                 "tags": [
                     "quiz"
                 ],
                 "description": "update the user",
-                "operationId": "QuizController.Update",
+                "operationId": "QuizController.Put",
                 "parameters": [
                     {
                         "in": "path",
@@ -364,6 +397,10 @@
             "title": "Question",
             "type": "object",
             "properties": {
+                "Answer": {
+                    "type": "integer",
+                    "format": "int64"
+                },
                 "Choice1": {
                     "type": "string"
                 },
@@ -381,10 +418,6 @@
                 },
                 "QuizName": {
                     "type": "string"
-                },
-                "answer": {
-                    "type": "integer",
-                    "format": "int64"
                 }
             }
         },
@@ -392,6 +425,9 @@
             "title": "Quiz",
             "type": "object",
             "properties": {
+                "Creator": {
+                    "type": "string"
+                },
                 "Name": {
                     "type": "string"
                 },
@@ -432,7 +468,7 @@
         },
         {
             "name": "quiz",
-            "description": "Operations about Users\n"
+            "description": "Operations about Quiz\n"
         }
     ]
 }

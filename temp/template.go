@@ -11,9 +11,9 @@ type HostUpdate struct {
 
 type QuestionUpdate struct {
 	Question string
-	Choice1 string
-	Choice2 string
-	Choice3 string
-	Choice4 string
-	answer int
+	Choice1  string
+	Choice2  string
+	Choice3  string
+	Choice4  string
+	Answer   int
 }

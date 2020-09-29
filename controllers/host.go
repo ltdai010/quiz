@@ -34,7 +34,7 @@ func (o *HostController) Post() {
 // @Param	code		path 	string	true		"the code you want to get"
 // @Success 200 {code} models.Host
 // @Failure 403 :code is empty
-// @router /GetAHost:code [get]
+// @router /GetAHost/:code [get]
 func (o *HostController) Get() {
 	objectId := o.Ctx.Input.Param(":code")
 	log.Println(objectId)
@@ -68,7 +68,7 @@ func (o *HostController) GetAll() {
 // @Param	body		body 	temp.HostUpdate	true		"The body"
 // @Success 200 {object} models.Host
 // @Failure 403 :hostId is empty
-// @router /UpdateAHost:hostId [put]
+// @router /UpdateAHost/:hostId [put]
 func (o *HostController) Put() {
 	objectId := o.Ctx.Input.Param(":hostId")
 	code, err := strconv.Atoi(objectId)
@@ -92,7 +92,7 @@ func (o *HostController) Put() {
 // @Param	Id		path 	string	true		"The objectId you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 Id is empty
-// @router /DeleteAHost:Id [delete]
+// @router /DeleteAHost/:Id [delete]
 func (o *HostController) Delete() {
 	objectId := o.Ctx.Input.Param(":Id")
 	id, err := strconv.Atoi(objectId)

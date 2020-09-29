@@ -7,7 +7,7 @@ import (
 	"quiz/temp"
 )
 
-// Operations about Users
+// Operations about Quiz
 type QuizController struct {
 	beego.Controller
 }
@@ -56,7 +56,7 @@ func (u *QuizController) GetAll() {
 // @Param	name		path 	string	true		"The key for staticblock"
 // @Success 200 {object} models.Question
 // @Failure 403 :name is not exist
-// @router /GetAllQuest:name [get]
+// @router /GetAllQuest/:name [get]
 func (u *QuizController) GetAllQuest() {
 	name := u.GetString(":name")
 	if name != "" {
@@ -75,8 +75,27 @@ func (u *QuizController) GetAllQuest() {
 // @Param	id		path 	string	true		"The key for staticblock"
 // @Success 200 {object} models.Quiz
 // @Failure 403 :id is empty
-// @router /GetAQuiz:id [get]
+// @router /GetAQuiz/:id [get]
 func (u *QuizController) Get() {
+	uid := u.GetString(":id")
+	if uid != "" {
+		user, err := models.GetQuiz(uid)
+		if err != nil {
+			u.Data["json"] = err.Error()
+		} else {
+			u.Data["json"] = user
+		}
+	}
+	u.ServeJSON()
+}
+
+// @Title Search
+// @Description get user by uid
+// @Param	id		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.Quiz
+// @Failure 403 :id is empty
+// @router /SearchQuiz/:id [get]
+func (u *QuizController) Search() {
 	uid := u.GetString(":id")
 	if uid != "" {
 		user, err := models.GetQuiz(uid)
@@ -95,7 +114,7 @@ func (u *QuizController) Get() {
 // @Param	body		body 	temp.QuizUpdate	true		"body for user content"
 // @Success 200 {string} update done!
 // @Failure 403 :uid is not int
-// @router /UpdateQuiz:uid [put]
+// @router /UpdateQuiz/:uid [put]
 func (u *QuizController) Put() {
 	uid := u.GetString(":uid")
 	if uid != "" {
@@ -116,7 +135,7 @@ func (u *QuizController) Put() {
 // @Param	qId		path 	string	true		"The uid you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 qId is empty
-// @router /DeleteQuiz:qId [delete]
+// @router /DeleteQuiz/:qId [delete]
 func (u *QuizController) Delete() {
 	uid := u.GetString(":qId")
 	models.DeleteQuiz(uid)
