@@ -32,6 +32,10 @@ func main()  {
 	
 }
 
+func init() {
+
+}
+
 func handleConnections(w http.ResponseWriter, r *http.Request) {
 	// Upgrade initial GET request to a websocket
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }

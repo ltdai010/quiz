@@ -17,7 +17,7 @@ type QuizController struct {
 // @Param	body		body 	models.Quiz	true		"body for user content"
 // @Success 200 {int} models.Quiz.Name
 // @Failure 403 body is empty
-// @router / [post]
+// @router /PostQuiz [post]
 func (u *QuizController) Post() {
 	var quiz models.Quiz
 	json.Unmarshal(u.Ctx.Input.RequestBody, &quiz)
@@ -44,7 +44,7 @@ func (u *QuizController) PostQuestions() {
 // @Title GetAll
 // @Description get all Users
 // @Success 200 {object} models.Quiz
-// @router / [get]
+// @router /GetAll [get]
 func (u *QuizController) GetAll() {
 	users := models.GetAllQuiz()
 	u.Data["json"] = users
@@ -56,7 +56,7 @@ func (u *QuizController) GetAll() {
 // @Param	name		path 	string	true		"The key for staticblock"
 // @Success 200 {object} models.Question
 // @Failure 403 :name is not exist
-// @router /:name [get]
+// @router /GetAllQuest:name [get]
 func (u *QuizController) GetAllQuest() {
 	name := u.GetString(":name")
 	if name != "" {
@@ -72,12 +72,12 @@ func (u *QuizController) GetAllQuest() {
 
 // @Title Get
 // @Description get user by uid
-// @Param	uid		path 	string	true		"The key for staticblock"
+// @Param	id		path 	string	true		"The key for staticblock"
 // @Success 200 {object} models.Quiz
-// @Failure 403 :uid is empty
-// @router /:uid [get]
+// @Failure 403 :id is empty
+// @router /GetAQuiz:id [get]
 func (u *QuizController) Get() {
-	uid := u.GetString(":uid")
+	uid := u.GetString(":id")
 	if uid != "" {
 		user, err := models.GetQuiz(uid)
 		if err != nil {
@@ -89,13 +89,13 @@ func (u *QuizController) Get() {
 	u.ServeJSON()
 }
 
-// @Title Update
+// @Title Put
 // @Description update the user
 // @Param	uid		path 	string	true		"The uid you want to update"
 // @Param	body		body 	temp.QuizUpdate	true		"body for user content"
 // @Success 200 {string} update done!
 // @Failure 403 :uid is not int
-// @router /:uid [put]
+// @router /UpdateQuiz:uid [put]
 func (u *QuizController) Put() {
 	uid := u.GetString(":uid")
 	if uid != "" {
@@ -113,12 +113,12 @@ func (u *QuizController) Put() {
 
 // @Title Delete
 // @Description delete the user
-// @Param	uid		path 	string	true		"The uid you want to delete"
+// @Param	qId		path 	string	true		"The uid you want to delete"
 // @Success 200 {string} delete success!
-// @Failure 403 uid is empty
-// @router /:uid [delete]
+// @Failure 403 qId is empty
+// @router /DeleteQuiz:qId [delete]
 func (u *QuizController) Delete() {
-	uid := u.GetString(":uid")
+	uid := u.GetString(":qId")
 	models.DeleteQuiz(uid)
 	u.Data["json"] = "delete success!"
 	u.ServeJSON()

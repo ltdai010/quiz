@@ -61,6 +61,32 @@
                 }
             }
         },
+        "/host/{Id}": {
+            "delete": {
+                "tags": [
+                    "host"
+                ],
+                "description": "delete the object",
+                "operationId": "HostController.Delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "Id",
+                        "description": "The objectId you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} delete success!"
+                    },
+                    "403": {
+                        "description": "Id is empty"
+                    }
+                }
+            }
+        },
         "/host/{code}": {
             "get": {
                 "tags": [
@@ -87,7 +113,7 @@
                 }
             }
         },
-        "/host/{objectId}": {
+        "/host/{hostId}": {
             "put": {
                 "tags": [
                     "host"
@@ -97,7 +123,7 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "objectId",
+                        "name": "hostId",
                         "description": "The host you want to update",
                         "required": true,
                         "type": "string"
@@ -120,31 +146,7 @@
                         }
                     },
                     "403": {
-                        "description": ":objectId is empty"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "host"
-                ],
-                "description": "delete the object",
-                "operationId": "HostController.Delete",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "objectId",
-                        "description": "The objectId you want to delete",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} delete success!"
-                    },
-                    "403": {
-                        "description": "objectId is empty"
+                        "description": ":hostId is empty"
                     }
                 }
             }
@@ -220,6 +222,35 @@
                 }
             }
         },
+        "/quiz/{id}": {
+            "get": {
+                "tags": [
+                    "quiz"
+                ],
+                "description": "get user by uid",
+                "operationId": "QuizController.Get",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Quiz"
+                        }
+                    },
+                    "403": {
+                        "description": ":id is empty"
+                    }
+                }
+            }
+        },
         "/quiz/{name}": {
             "get": {
                 "tags": [
@@ -249,34 +280,33 @@
                 }
             }
         },
-        "/quiz/{uid}": {
-            "get": {
+        "/quiz/{qId}": {
+            "delete": {
                 "tags": [
                     "quiz"
                 ],
-                "description": "get user by uid",
-                "operationId": "QuizController.Get",
+                "description": "delete the user",
+                "operationId": "QuizController.Delete",
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "uid",
-                        "description": "The key for staticblock",
+                        "name": "qId",
+                        "description": "The uid you want to delete",
                         "required": true,
                         "type": "string"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.Quiz"
-                        }
+                        "description": "{string} delete success!"
                     },
                     "403": {
-                        "description": ":uid is empty"
+                        "description": "qId is empty"
                     }
                 }
-            },
+            }
+        },
+        "/quiz/{uid}": {
             "put": {
                 "tags": [
                     "quiz"
@@ -307,30 +337,6 @@
                     },
                     "403": {
                         "description": ":uid is not int"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "quiz"
-                ],
-                "description": "delete the user",
-                "operationId": "QuizController.Delete",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "uid",
-                        "description": "The uid you want to delete",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} delete success!"
-                    },
-                    "403": {
-                        "description": "uid is empty"
                     }
                 }
             }
