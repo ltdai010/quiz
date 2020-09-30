@@ -6,7 +6,7 @@ import (
 	"crypto/rand"
 	"errors"
 	firebase "firebase.google.com/go"
-	"github.com/algolia/algoliasearch-client-go/v3/algolia/search"
+	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 	"log"
 	"math/big"
@@ -15,11 +15,12 @@ import (
 )
 
 var (
-	hosts map[int]*Host
 	client *firestore.Client
-	clientAl *search.Client
+	//clientAl *search.Client
 	ctx context.Context
 )
+
+const host = "host"
 
 type Host struct {
 	Name 	   			string
@@ -43,7 +44,7 @@ func generateCode() int {
 }
 
 func isExist(code int) bool {
-	ref := client.Collection("host").Doc(strconv.Itoa(code))
+	ref := client.Collection(host).Doc(strconv.Itoa(code))
 	_, err := GetHostInfo(ctx, ref)
 	if err != nil {
 		return false
@@ -52,7 +53,6 @@ func isExist(code int) bool {
 }
 
 func init() {
-	hosts = make(map[int]*Host)
 	ctx = context.Background()
 	_, err := firebase.NewApp(ctx, nil)
 	if err != nil {
@@ -74,14 +74,13 @@ func init() {
 	//})
 }
 
-func AddHost(host temp.HostUpdate) int {
+func AddHost(ht temp.HostUpdate) int {
 	var h Host
 	h.Code = generateCode()
-	h.Name = host.Name
-	h.NumberOfParticipant = host.NumberOfParticipant
-	hosts[h.Code] = &h
+	h.Name = ht.Name
+	h.NumberOfParticipant = ht.NumberOfParticipant
 	s := strconv.Itoa(h.Code)
-	_, err := client.Collection("host").Doc(s).Set(ctx, map[string]interface{}{
+	_, err := client.Collection(host).Doc(s).Set(ctx, map[string]interface{}{
 		"Name":    h.Name,
 		"NumberOfParticipant":   h.NumberOfParticipant,
 		"Code": h.Code,
@@ -101,7 +100,7 @@ func GetHostInfo(ctx context.Context, ref *firestore.DocumentRef) (*firestore.Do
 }
 
 func GetOne(code int) (object *Host, err error) {
-	ref := client.Collection("host").Doc(strconv.Itoa(code))
+	ref := client.Collection(host).Doc(strconv.Itoa(code))
 	if doc, err := GetHostInfo(ctx, ref); err == nil {
 		var h Host
 		err := doc.DataTo(&h)
@@ -114,19 +113,44 @@ func GetOne(code int) (object *Host, err error) {
 }
 
 func GetAllHost() map[int]*Host {
+	list := client.Collection(host).Documents(ctx)
+	hosts := make(map[int]*Host)
+	for{
+		var h Host
+		doc, err := list.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return nil
+		}
+		err = doc.DataTo(&h)
+		if err != nil {
+			return nil
+		}
+		hosts[h.Code] = &h
+	}
 	return hosts
 }
 
-func Update(Code int, host *temp.HostUpdate) (err error) {
-	if v, ok := hosts[Code]; ok {
-		v.Name = host.Name
-		v.NumberOfParticipant = host.NumberOfParticipant
+func Update(code int, h *temp.HostUpdate) (err error) {
+	sCode := strconv.Itoa(code)
+	ref := client.Collection(host).Doc(sCode)
+	if _, err := GetHostInfo(ctx, ref); err == nil {
+		_, err = client.Collection(host).Doc(sCode).Set(ctx, map[string]interface{}{
+			"Name":    h.Name,
+			"NumberOfParticipant":   h.NumberOfParticipant,
+			"Code": code,
+		}, firestore.MergeAll)
+		if err != nil {
+			return err
+		}
 		return nil
 	}
 	return errors.New("code not exist")
 }
 
 func Delete(Code int) {
-	delete(hosts, Code)
+	client.Collection(host).Doc(strconv.Itoa(Code)).Delete(ctx)
 }
 

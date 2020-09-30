@@ -62,9 +62,9 @@ func (u *QuizController) GetAllQuest() {
 	if name != "" {
 		users, err := models.GetAllQuestion(name)
 		if err != nil {
-			u.Data["json"] = users
+			u.Data["json"] = err
 		} else {
-			u.Data["json"] = err.Error()
+			u.Data["json"] = users
 		}
 	}
 	u.ServeJSON()

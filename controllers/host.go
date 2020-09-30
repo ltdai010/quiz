@@ -37,7 +37,6 @@ func (o *HostController) Post() {
 // @router /GetAHost/:code [get]
 func (o *HostController) Get() {
 	objectId := o.Ctx.Input.Param(":code")
-	log.Println(objectId)
 	code, err := strconv.Atoi(objectId)
 	log.Println(code)
 	if err == nil {
@@ -77,7 +76,6 @@ func (o *HostController) Put() {
 	}
 	var ob temp.HostUpdate
 	json.Unmarshal(o.Ctx.Input.RequestBody, &ob)
-
 	err = models.Update(code, &ob)
 	if err != nil {
 		o.Data["json"] = err.Error()
