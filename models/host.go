@@ -16,8 +16,8 @@ import (
 
 var (
 	client *firestore.Client
-	//clientAl *search.Client
 	ctx context.Context
+	sa  option.ClientOption
 )
 
 const host = "host"
@@ -67,11 +67,7 @@ func init() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	//clientAl = search.NewClient("quiz", "quizapi")
-	//index := clientAl.InitIndex("Name")
-	//res, err := index.SaveObject([]Quiz{
-	//	{Name: "math-01", NumberOfQuestion: 15},
-	//})
+
 }
 
 func AddHost(ht temp.HostUpdate) int {
@@ -90,6 +86,7 @@ func AddHost(ht temp.HostUpdate) int {
 	}
 	return h.Code
 }
+
 
 func GetHostInfo(ctx context.Context, ref *firestore.DocumentRef) (*firestore.DocumentSnapshot, error) {
 	doc, err := ref.Get(ctx)

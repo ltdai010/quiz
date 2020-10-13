@@ -90,6 +90,24 @@ func init() {
 
     beego.GlobalControllerRouter["quiz/controllers:QuizController"] = append(beego.GlobalControllerRouter["quiz/controllers:QuizController"],
         beego.ControllerComments{
+            Method: "GetAllQuizInTopic",
+            Router: "/GetAllQuizInTopic/:id",
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["quiz/controllers:QuizController"] = append(beego.GlobalControllerRouter["quiz/controllers:QuizController"],
+        beego.ControllerComments{
+            Method: "PostImage",
+            Router: "/PostImage",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["quiz/controllers:QuizController"] = append(beego.GlobalControllerRouter["quiz/controllers:QuizController"],
+        beego.ControllerComments{
             Method: "PostQuestions",
             Router: "/PostQuest",
             AllowHTTPMethods: []string{"post"},
@@ -109,7 +127,7 @@ func init() {
     beego.GlobalControllerRouter["quiz/controllers:QuizController"] = append(beego.GlobalControllerRouter["quiz/controllers:QuizController"],
         beego.ControllerComments{
             Method: "Search",
-            Router: "/SearchQuiz/:id",
+            Router: "/SearchQuiz/:key",
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -120,6 +138,42 @@ func init() {
             Method: "Put",
             Router: "/UpdateQuiz/:uid",
             AllowHTTPMethods: []string{"put"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["quiz/controllers:TopicController"] = append(beego.GlobalControllerRouter["quiz/controllers:TopicController"],
+        beego.ControllerComments{
+            Method: "GetAllTopic",
+            Router: "/GetAll",
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["quiz/controllers:TopicController"] = append(beego.GlobalControllerRouter["quiz/controllers:TopicController"],
+        beego.ControllerComments{
+            Method: "GetTopic",
+            Router: "/GetTopic/:id",
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["quiz/controllers:TopicController"] = append(beego.GlobalControllerRouter["quiz/controllers:TopicController"],
+        beego.ControllerComments{
+            Method: "PostQuizToTopic",
+            Router: "/PostQuizToTopic",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["quiz/controllers:TopicController"] = append(beego.GlobalControllerRouter["quiz/controllers:TopicController"],
+        beego.ControllerComments{
+            Method: "PostTopic",
+            Router: "/PostTopic",
+            AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})

@@ -254,6 +254,68 @@
                 }
             }
         },
+        "/quiz/GetAllQuizInTopic/{id}": {
+            "get": {
+                "tags": [
+                    "quiz"
+                ],
+                "description": "get user by uid",
+                "operationId": "QuizController.GetAllQuizInTopic",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Quiz"
+                        }
+                    },
+                    "403": {
+                        "description": ":id is empty"
+                    }
+                }
+            }
+        },
+        "/quiz/PostImage": {
+            "post": {
+                "tags": [
+                    "quiz"
+                ],
+                "description": "create users",
+                "operationId": "QuizController.PostImage",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "file",
+                        "description": "image",
+                        "required": true,
+                        "type": "file"
+                    },
+                    {
+                        "in": "query",
+                        "name": "name",
+                        "description": "name",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} done"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/quiz/PostQuest": {
             "post": {
                 "tags": [
@@ -268,7 +330,10 @@
                         "description": "body for user content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Question"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Question"
+                            }
                         }
                     }
                 ],
@@ -310,7 +375,7 @@
                 }
             }
         },
-        "/quiz/SearchQuiz/{id}": {
+        "/quiz/SearchQuiz/{key}": {
             "get": {
                 "tags": [
                     "quiz"
@@ -320,7 +385,7 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "id",
+                        "name": "key",
                         "description": "The key for staticblock",
                         "required": true,
                         "type": "string"
@@ -334,7 +399,7 @@
                         }
                     },
                     "403": {
-                        "description": ":id is empty"
+                        "description": ":key is empty"
                     }
                 }
             }
@@ -370,6 +435,108 @@
                     },
                     "403": {
                         "description": ":uid is not int"
+                    }
+                }
+            }
+        },
+        "/topic/GetAll": {
+            "get": {
+                "tags": [
+                    "topic"
+                ],
+                "description": "get all topic",
+                "operationId": "TopicController.GetAll",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Topic"
+                        }
+                    }
+                }
+            }
+        },
+        "/topic/GetTopic/{id}": {
+            "get": {
+                "tags": [
+                    "topic"
+                ],
+                "description": "get user by uid",
+                "operationId": "TopicController.GetTopic",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Topic"
+                        }
+                    },
+                    "403": {
+                        "description": ":id is empty"
+                    }
+                }
+            }
+        },
+        "/topic/PostQuizToTopic": {
+            "post": {
+                "tags": [
+                    "topic"
+                ],
+                "description": "create users",
+                "operationId": "TopicController.PostQuizToTopic",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for user content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.TopicQuiz"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} models.Topic.Name"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/topic/PostTopic": {
+            "post": {
+                "tags": [
+                    "topic"
+                ],
+                "description": "create users",
+                "operationId": "TopicController.PostTopic",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for user content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Topic"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{int} models.Topic.Name"
+                    },
+                    "403": {
+                        "description": "body is empty"
                     }
                 }
             }
@@ -437,6 +604,27 @@
                 }
             }
         },
+        "models.Topic": {
+            "title": "Topic",
+            "type": "object",
+            "properties": {
+                "Name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.TopicQuiz": {
+            "title": "TopicQuiz",
+            "type": "object",
+            "properties": {
+                "QuizID": {
+                    "type": "string"
+                },
+                "TopicID": {
+                    "type": "string"
+                }
+            }
+        },
         "temp.HostUpdate": {
             "title": "HostUpdate",
             "type": "object",
@@ -469,6 +657,10 @@
         {
             "name": "quiz",
             "description": "Operations about Quiz\n"
+        },
+        {
+            "name": "topic",
+            "description": "Operations about topic\n"
         }
     ]
 }

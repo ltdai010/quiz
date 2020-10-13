@@ -9,6 +9,12 @@ type HostUpdate struct {
 	NumberOfParticipant int
 }
 
+type QuizReceived struct {
+	Creator string
+	Name string
+	NumberOfQuestion string
+}
+
 type QuestionUpdate struct {
 	Question string
 	Choice1  string

@@ -25,6 +25,11 @@ func init() {
 				&controllers.QuizController{},
 			),
 		),
+		beego.NSNamespace("/topic",
+			beego.NSInclude(
+				&controllers.TopicController{},
+			),
+		),
 	)
 	beego.AddNamespace(ns)
 }

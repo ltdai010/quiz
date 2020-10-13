@@ -20,7 +20,11 @@ type QuizController struct {
 // @router /PostQuiz [post]
 func (u *QuizController) Post() {
 	var quiz models.Quiz
-	json.Unmarshal(u.Ctx.Input.RequestBody, &quiz)
+	err := json.Unmarshal(u.Ctx.Input.RequestBody, &quiz)
+	if err != nil {
+		u.Ctx.WriteString(err.Error())
+		return
+	}
 	name := models.AddQuiz(quiz)
 	u.Data["json"] = map[string]string{"Name": name}
 	u.ServeJSON()
@@ -29,13 +33,17 @@ func (u *QuizController) Post() {
 
 // @Title PostQuestions
 // @Description post questions
-// @Param	body		body	models.Question	true		"body for user content"
+// @Param	body		body	[]models.Question	true		"body for user content"
 // @Success 200 {string} models.Question.QuizName
 // @Failure 403 body is empty
 // @router /PostQuest [post]
 func (u *QuizController) PostQuestions() {
 	var qt []models.Question
-	json.Unmarshal(u.Ctx.Input.RequestBody, &qt)
+	err := json.Unmarshal(u.Ctx.Input.RequestBody, &qt)
+	if err != nil {
+		u.Ctx.WriteString(err.Error())
+		return
+	}
 	qname := models.AddQuestions(qt[0].QuizName, qt)
 	u.Data["json"] = map[string]string{"quizName": qname}
 	u.ServeJSON()
@@ -70,6 +78,29 @@ func (u *QuizController) GetAllQuest() {
 	u.ServeJSON()
 }
 
+// @Title PostImage
+// @Description create users
+// @Param	file		query 	file	true		"image"
+// @Param   name		query   string	true		"name"
+// @Success 200 {string} done
+// @Failure 403 body is empty
+// @router /PostImage [post]
+func (u *QuizController) PostImage() {
+	file, _, err:=u.GetFile("file")
+	name := u.GetString("name")
+	if err!=nil {
+		u.Ctx.WriteString(err.Error())
+		return
+	}
+	defer file.Close()
+	err = models.UploadFile(file, name)
+	if err!=nil {
+		u.Ctx.WriteString("Upload failed")
+	}else {
+		u.Ctx.WriteString("Upload succeeded")
+	}
+}
+
 // @Title Get
 // @Description get user by uid
 // @Param	id		path 	string	true		"The key for staticblock"
@@ -89,20 +120,39 @@ func (u *QuizController) Get() {
 	u.ServeJSON()
 }
 
-// @Title Search
+// @Title GetAllQuizInTopic
 // @Description get user by uid
 // @Param	id		path 	string	true		"The key for staticblock"
 // @Success 200 {object} models.Quiz
 // @Failure 403 :id is empty
-// @router /SearchQuiz/:id [get]
-func (u *QuizController) Search() {
+// @router /GetAllQuizInTopic/:id [get]
+func (u *QuizController) GetAllQuizInTopic() {
 	uid := u.GetString(":id")
 	if uid != "" {
-		user, err := models.GetQuiz(uid)
+		quiz, err := models.GetALlQuizInTopic(uid)
 		if err != nil {
 			u.Data["json"] = err.Error()
 		} else {
-			u.Data["json"] = user
+			u.Data["json"] = quiz
+		}
+	}
+	u.ServeJSON()
+}
+
+// @Title Search
+// @Description get user by uid
+// @Param	key		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.Quiz
+// @Failure 403 :key is empty
+// @router /SearchQuiz/:key [get]
+func (u *QuizController) Search() {
+	key := u.GetString(":key")
+	if key != "" {
+		quizzes, err := models.SearchForQuiz(key)
+		if err != nil {
+			u.Data["json"] = err
+		} else {
+			u.Data["json"] = quizzes
 		}
 	}
 	u.ServeJSON()

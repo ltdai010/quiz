@@ -2,29 +2,61 @@ package models
 
 import (
 	"cloud.google.com/go/firestore"
+	"cloud.google.com/go/storage"
 	"context"
 	"errors"
+	firebase "firebase.google.com/go"
 	"fmt"
+	"github.com/algolia/algoliasearch-client-go/algolia/search"
 	"google.golang.org/api/iterator"
+	"google.golang.org/api/option"
+	"io"
 	"log"
+	"mime/multipart"
 	"quiz/temp"
 	"reflect"
 	"strconv"
 )
 
 var (
-	QuizList map[string]*Quiz
-	QuestList map[string][]*Question
+	clientS *search.Client
+	index	*search.Index
+	bucket  *storage.BucketHandle
 )
 
 const quiz = "quiz"
 
 func init() {
-	QuizList = make(map[string]*Quiz)
-	QuestList = make(map[string][]*Question)
+	clientS = search.NewClient("75E8OZCPI1", "f5c16b7cfd3f10ac4841cddcd762acb4")
+	index	= clientS.InitIndex("quiz")
+	config := &firebase.Config{
+		StorageBucket: "quiz-010.appspot.com",
+	}
+	ctx := context.Background()
+	sa := option.WithCredentialsFile("account/quiz-010-adafd5469f01.json")
+	app, err := firebase.NewApp(ctx, config, sa)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	clientStorage, err := app.Storage(ctx)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	bucket, err = clientStorage.DefaultBucket()
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
 
 type Quiz struct {
+	Creator string
+	Name string
+	NumberOfQuestion int
+}
+
+type Quiz_ struct {
+	ObjectID string `json:"objectID"`
+	ID 		 string
 	Creator string
 	Name string
 	NumberOfQuestion int
@@ -41,15 +73,24 @@ type Question struct {
 }
 
 func AddQuiz(q Quiz) string {
-	_, err := client.Collection(quiz).Doc(q.Name).Set(ctx, map[string]interface{}{
+	s, _, err := client.Collection(quiz).Add(ctx, map[string]interface{}{
 		"Name":             q.Name,
 		"NumberOfQuestion": q.NumberOfQuestion,
 		"Creator":          q.Creator,
+		"Question": map[string]interface{}{
+		},
 	})
+	q_ := Quiz_{
+		ObjectID: q.Name,
+		Name: q.Name,
+		NumberOfQuestion: q.NumberOfQuestion,
+		Creator: q.Creator,
+	}
+	index.SaveObject(q_)
 	if err != nil {
 		log.Printf("Failed adding alovelace: %v \n", err)
 	}
-	return q.Name
+	return s.ID
 }
 
 func AddQuestions(name string, questions []Question) string {
@@ -85,6 +126,18 @@ func AddQuestions(name string, questions []Question) string {
 		}
 	}
 	return "done"
+}
+
+// uploadFile uploads an object.
+func UploadFile(file multipart.File, name string) error {
+	wc := bucket.Object(name).NewWriter(ctx)
+	if _, err := io.Copy(wc, file); err != nil {
+		return fmt.Errorf("io.Copy: %v", err)
+	}
+	if err := wc.Close(); err != nil {
+		return fmt.Errorf("Writer.Close: %v", err)
+	}
+	return nil
 }
 
 func GetQuizInfo(ctx context.Context, ref *firestore.DocumentRef) (*firestore.DocumentSnapshot, error) {
@@ -206,6 +259,49 @@ func UpdateQuiz(name string, q *temp.QuizUpdate) (err error) {
 	return errors.New("quiz not exist")
 }
 
+func SearchForQuiz(key string) ([]Quiz, error) {
+	res, err := index.Search(key)
+	if err != nil {
+		return nil, err
+	}
+	var quizzes []Quiz
+	err = res.UnmarshalHits(&quizzes)
+	if err != nil {
+		return nil, err
+	}
+	return quizzes, nil
+}
+
 func DeleteQuiz(name string) {
 	client.Collection(quiz).Doc(name).Delete(ctx)
+}
+
+func GetALlQuizInTopic(topicID string) (map[string]*Quiz, error) {
+	iter := client.Collection(topicQuiz).Where("TopicID", "==", topicID).Documents(ctx)
+	mapq := make(map[string]*Quiz)
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		var tq TopicQuiz
+		err = doc.DataTo(&tq)
+		if err != nil {
+			return nil, err
+		}
+		quizDoc, err := client.Collection(quiz).Doc(tq.QuizID).Get(ctx)
+		if err != nil {
+			return nil, err
+		}
+		var q Quiz
+		err = quizDoc.DataTo(&q)
+		if err != nil {
+			return nil, err
+		}
+		mapq[tq.QuizID] = &q
+	}
+	return mapq, nil
 }
