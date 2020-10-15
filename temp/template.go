@@ -23,3 +23,7 @@ type QuestionUpdate struct {
 	Choice4  string
 	Answer   int
 }
+
+type mapQuestion struct {
+	num map[string]QuestionUpdate
+}

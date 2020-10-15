@@ -292,7 +292,7 @@
                 "operationId": "QuizController.PostImage",
                 "parameters": [
                     {
-                        "in": "query",
+                        "in": "formData",
                         "name": "file",
                         "description": "image",
                         "required": true,
@@ -316,7 +316,7 @@
                 }
             }
         },
-        "/quiz/PostQuest": {
+        "/quiz/PostQuest/{id}": {
             "post": {
                 "tags": [
                     "quiz"
@@ -325,15 +325,19 @@
                 "operationId": "QuizController.PostQuestions",
                 "parameters": [
                     {
+                        "in": "path",
+                        "name": "id",
+                        "description": "quizID",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
                         "in": "body",
                         "name": "body",
                         "description": "body for user content",
                         "required": true,
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Question"
-                            }
+                            "$ref": "#/definitions/temp.mapQuestion"
                         }
                     }
                 ],
@@ -400,6 +404,41 @@
                     },
                     "403": {
                         "description": ":key is empty"
+                    }
+                }
+            }
+        },
+        "/quiz/UpdateQuestion/{name}": {
+            "put": {
+                "tags": [
+                    "quiz"
+                ],
+                "description": "post questions",
+                "operationId": "QuizController.UpdateQuestion",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "name",
+                        "description": "name quiz",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for user content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/temp.mapQuestion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} models.Question.QuizName"
+                    },
+                    "403": {
+                        "description": "body is empty"
                     }
                 }
             }
@@ -638,6 +677,31 @@
                 }
             }
         },
+        "temp.QuestionUpdate": {
+            "title": "QuestionUpdate",
+            "type": "object",
+            "properties": {
+                "Answer": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Choice1": {
+                    "type": "string"
+                },
+                "Choice2": {
+                    "type": "string"
+                },
+                "Choice3": {
+                    "type": "string"
+                },
+                "Choice4": {
+                    "type": "string"
+                },
+                "Question": {
+                    "type": "string"
+                }
+            }
+        },
         "temp.QuizUpdate": {
             "title": "QuizUpdate",
             "type": "object",
@@ -645,6 +709,15 @@
                 "NumberOfQuestion": {
                     "type": "integer",
                     "format": "int64"
+                }
+            }
+        },
+        "temp.mapQuestion": {
+            "title": "mapQuestion",
+            "type": "object",
+            "properties": {
+                "num": {
+                    "$ref": "#/definitions/temp.QuestionUpdate"
                 }
             }
         }

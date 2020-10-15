@@ -33,18 +33,40 @@ func (u *QuizController) Post() {
 
 // @Title PostQuestions
 // @Description post questions
-// @Param	body		body	[]models.Question	true		"body for user content"
+// @Param	id			path	string				true		"quizID"
+// @Param	body		body	temp.mapQuestion	true		"body for user content"
 // @Success 200 {string} models.Question.QuizName
 // @Failure 403 body is empty
-// @router /PostQuest [post]
+// @router /PostQuest/:id [post]
 func (u *QuizController) PostQuestions() {
-	var qt []models.Question
+	id := u.Ctx.Input.Param(":id")
+	var qt map[string]models.Question
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &qt)
 	if err != nil {
 		u.Ctx.WriteString(err.Error())
 		return
 	}
-	qname := models.AddQuestions(qt[0].QuizName, qt)
+	qname := models.AddQuestions(id, qt)
+	u.Data["json"] = map[string]string{"quizName": qname}
+	u.ServeJSON()
+}
+
+// @Title UpdateQuestion
+// @Description post questions
+// @Param	name		path	string				true		"name quiz"
+// @Param	body		body	temp.mapQuestion	true		"body for user content"
+// @Success 200 {string} models.Question.QuizName
+// @Failure 403 body is empty
+// @router /UpdateQuestion/:name [put]
+func (u *QuizController) UpdateQuestion() {
+	id := u.Ctx.Input.Param(":name")
+	var qt map[string]models.Question
+	err := json.Unmarshal(u.Ctx.Input.RequestBody, &qt)
+	if err != nil {
+		u.Ctx.WriteString(err.Error())
+		return
+	}
+	qname := models.UpdateQuestion(id, qt)
 	u.Data["json"] = map[string]string{"quizName": qname}
 	u.ServeJSON()
 }
@@ -80,7 +102,7 @@ func (u *QuizController) GetAllQuest() {
 
 // @Title PostImage
 // @Description create users
-// @Param	file		query 	file	true		"image"
+// @Param	file		formData 	file	true		"image"
 // @Param   name		query   string	true		"name"
 // @Success 200 {string} done
 // @Failure 403 body is empty

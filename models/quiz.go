@@ -93,7 +93,7 @@ func AddQuiz(q Quiz) string {
 	return s.ID
 }
 
-func AddQuestions(name string, questions []Question) string {
+func UpdateQuestion(name string, questions map[string]Question) string {
 	doc, err := client.Collection(quiz).Doc(name).Get(ctx)
 	if err != nil {
 		return "quiz not found"
@@ -102,16 +102,31 @@ func AddQuestions(name string, questions []Question) string {
 	if err != nil {
 		return err.Error()
 	}
-	length := 0
-	v := reflect.ValueOf(list)
-	if v.Kind() == reflect.Map {
-		length = len(v.MapKeys())
+	creator, err := doc.DataAt("Creator")
+	if err != nil {
+		return err.Error()
 	}
+	number, err := doc.DataAt("NumberOfQuestion")
+	if err != nil {
+		return err.Error()
+	}
+	v := reflect.ValueOf(list)
+	if v.Kind() != reflect.Map {
+		return "wrong type"
+	}
+	_, err = client.Collection(quiz).Doc(name).Set(ctx, map[string]interface{}{
+		"Creator":			creator,
+		"Name"	:			name,
+		"NumberOfQuestion":	number,
+		"Question": map[string]interface{}{},
+	})
 	for i, v := range questions {
-		num := strconv.Itoa(length + i)
 		_, err := client.Collection(quiz).Doc(name).Set(ctx, map[string]interface{}{
+			"Creator":			creator,
+			"Name"	:			name,
+			"NumberOfQuestion":	number,
 			"Question": map[string]interface{}{
-				num: map[string]interface{}{
+				i: map[string]interface{}{
 					"Question": v.Question,
 					"Choice1" : v.Choice1,
 					"Choice2" : v.Choice2,
@@ -128,7 +143,39 @@ func AddQuestions(name string, questions []Question) string {
 	return "done"
 }
 
-// uploadFile uploads an object.
+func AddQuestions(name string, questions map[string]Question) string {
+	doc, err := client.Collection(quiz).Doc(name).Get(ctx)
+	if err != nil {
+		return "quiz not found"
+	}
+	list, err := doc.DataAt("Question")
+	if err != nil {
+		return err.Error()
+	}
+	v := reflect.ValueOf(list)
+	if v.Kind() != reflect.Map {
+		return "wrong type"
+	}
+	for i, v := range questions {
+		_, err := client.Collection(quiz).Doc(name).Set(ctx, map[string]interface{}{
+			"Question": map[string]interface{}{
+				i: map[string]interface{}{
+					"Question": v.Question,
+					"Choice1" : v.Choice1,
+					"Choice2" : v.Choice2,
+					"Choice3" : v.Choice3,
+					"Choice4" : v.Choice4,
+					"Answer"  : v.Answer,
+				},
+			},
+		}, firestore.MergeAll)
+		if err != nil {
+			log.Printf("Failed adding alovelace: %v \n", err)
+		}
+	}
+	return "done"
+}
+
 func UploadFile(file multipart.File, name string) error {
 	wc := bucket.Object(name).NewWriter(ctx)
 	if _, err := io.Copy(wc, file); err != nil {
@@ -184,33 +231,19 @@ func GetAllQuiz() map[string]*Quiz {
 		if err == iterator.Done {
 			break
 		}
-		name, err := doc.DataAt("Name")
+		err = doc.DataTo(&q)
 		if err != nil {
 			return nil
 		}
-		creator, err := doc.DataAt("Creator")
-		if err != nil {
-			return nil
-		}
-		numberOfQuestion, err := doc.DataAt("NumberOfQuestion")
-		if err != nil {
-			return nil
-		}
-		q.Name = fmt.Sprint(name)
-		q.Creator = fmt.Sprint(creator)
-		q.NumberOfQuestion, err = strconv.Atoi(fmt.Sprint(numberOfQuestion))
-		if err != nil {
-			return nil
-		}
-		quizzes[q.Name] = &q
+		quizzes[doc.Ref.ID] = &q
 	}
 	return quizzes
 }
 
-func GetAllQuestion(quizName string) ([]*temp.QuestionUpdate, error) {
+func GetAllQuestion(quizName string) (map[string]*temp.QuestionUpdate, error) {
 	ref := client.Collection(quiz).Doc(quizName)
 	if doc, err := GetQuizInfo(ctx, ref); err == nil {
-		var questions []*temp.QuestionUpdate
+		questions := make(map[string]*temp.QuestionUpdate)
 		list, err := doc.DataAt("Question")
 		v := reflect.ValueOf(list)
 		if err != nil {
@@ -226,7 +259,7 @@ func GetAllQuestion(quizName string) ([]*temp.QuestionUpdate, error) {
 				q.Choice2 = value["Choice2"].(string)
 				q.Choice3 = value["Choice3"].(string)
 				q.Choice4 = value["Choice4"].(string)
-				questions = append(questions, &q)
+				questions[key.String()] = &q
 			}
 		}
 		return questions, nil
@@ -284,6 +317,7 @@ func GetALlQuizInTopic(topicID string) (map[string]*Quiz, error) {
 		if err == iterator.Done {
 			break
 		}
+		id := doc.Ref.ID
 		if err != nil {
 			return nil, err
 		}
@@ -301,7 +335,7 @@ func GetALlQuizInTopic(topicID string) (map[string]*Quiz, error) {
 		if err != nil {
 			return nil, err
 		}
-		mapq[tq.QuizID] = &q
+		mapq[id] = &q
 	}
 	return mapq, nil
 }
