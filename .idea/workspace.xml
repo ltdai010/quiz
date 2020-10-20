@@ -27,7 +27,6 @@
       <change beforePath="$PROJECT_DIR$/routers/commentsRouter_controllers.go" beforeDir="false" afterPath="$PROJECT_DIR$/routers/commentsRouter_controllers.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/swagger/swagger.json" beforeDir="false" afterPath="$PROJECT_DIR$/swagger/swagger.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/swagger/swagger.yml" beforeDir="false" afterPath="$PROJECT_DIR$/swagger/swagger.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/temp/template.go" beforeDir="false" afterPath="$PROJECT_DIR$/temp/template.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,7 +57,7 @@
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../forum" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Console Colors" />
+    <property name="settings.editor.selected.configurable" value="go.vgo" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -86,9 +85,9 @@
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="690" y="254" width="530" height="605" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1601885601691" />
-    <state x="227" y="132" width="1271" height="948" key="SettingsEditor" timestamp="1601537031192">
+    <state x="227" y="132" width="1271" height="948" key="SettingsEditor" timestamp="1602774339564">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="227" y="132" width="1271" height="948" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1601537031192" />
+    <state x="227" y="132" width="1271" height="948" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1602774339564" />
   </component>
 </project>

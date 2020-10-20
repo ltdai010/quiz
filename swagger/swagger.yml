@@ -148,7 +148,7 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/models.Quiz'
-  /quiz/GetAllQuest/{name}:
+  /quiz/GetAllQuest/{quizid}:
     get:
       tags:
       - quiz
@@ -156,7 +156,7 @@ paths:
       operationId: QuizController.GetAllQuest
       parameters:
       - in: path
-        name: name
+        name: quizid
         description: The key for staticblock
         required: true
         type: string
@@ -166,7 +166,7 @@ paths:
           schema:
             $ref: '#/definitions/models.Question'
         "403":
-          description: :name is not exist
+          description: :quizid is not exist
   /quiz/GetAllQuizInTopic/{id}:
     get:
       tags:

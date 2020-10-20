@@ -225,7 +225,7 @@
                 }
             }
         },
-        "/quiz/GetAllQuest/{name}": {
+        "/quiz/GetAllQuest/{quizid}": {
             "get": {
                 "tags": [
                     "quiz"
@@ -235,7 +235,7 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "name",
+                        "name": "quizid",
                         "description": "The key for staticblock",
                         "required": true,
                         "type": "string"
@@ -249,7 +249,7 @@
                         }
                     },
                     "403": {
-                        "description": ":name is not exist"
+                        "description": ":quizid is not exist"
                     }
                 }
             }

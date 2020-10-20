@@ -317,7 +317,6 @@ func GetALlQuizInTopic(topicID string) (map[string]*Quiz, error) {
 		if err == iterator.Done {
 			break
 		}
-		id := doc.Ref.ID
 		if err != nil {
 			return nil, err
 		}
@@ -335,7 +334,7 @@ func GetALlQuizInTopic(topicID string) (map[string]*Quiz, error) {
 		if err != nil {
 			return nil, err
 		}
-		mapq[id] = &q
+		mapq[tq.QuizID] = &q
 	}
 	return mapq, nil
 }
