@@ -83,12 +83,12 @@ func (u *QuizController) GetAll() {
 
 // @Title GetAllQuest
 // @Description get all questions
-// @Param	name		path 	string	true		"The key for staticblock"
+// @Param	quizid		path 	string	true		"The key for staticblock"
 // @Success 200 {object} models.Question
-// @Failure 403 :name is not exist
-// @router /GetAllQuest/:name [get]
+// @Failure 403 :quizid is not exist
+// @router /GetAllQuest/:quizid [get]
 func (u *QuizController) GetAllQuest() {
-	name := u.GetString(":name")
+	name := u.GetString(":quizid")
 	if name != "" {
 		users, err := models.GetAllQuestion(name)
 		if err != nil {
