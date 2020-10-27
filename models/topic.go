@@ -6,12 +6,12 @@ import (
 )
 
 type Topic struct {
-	Name	string
+	Name string
 }
 
 type TopicQuiz struct {
-	QuizID	string
-	TopicID	string
+	QuizID  string
+	TopicID string
 }
 
 const topic = "topic"
@@ -19,7 +19,7 @@ const topicQuiz = "topicQuiz"
 
 func AddTopic(t *Topic) string {
 	docs, _, err := client.Collection(topic).Add(ctx, map[string]interface{}{
-		"Name" : t.Name,
+		"Name": t.Name,
 	})
 	if err != nil {
 		return err.Error()
@@ -30,7 +30,7 @@ func AddTopic(t *Topic) string {
 func GetAllTopic() map[string]*Topic {
 	list := client.Collection(topic).Documents(ctx)
 	topics := make(map[string]*Topic)
-	for{
+	for {
 		var t Topic
 		doc, err := list.Next()
 		if err == iterator.Done {
@@ -50,7 +50,7 @@ func GetAllTopic() map[string]*Topic {
 
 func AddQuizToTopic(topicQ TopicQuiz) error {
 	_, _, err := client.Collection(topicQuiz).Add(ctx, map[string]interface{}{
-		"QuizID" : topicQ.QuizID,
+		"QuizID":  topicQ.QuizID,
 		"TopicID": topicQ.TopicID,
 	})
 	if err != nil {
@@ -71,4 +71,3 @@ func GetTopic(topicID string) (*Topic, error) {
 	}
 	return nil, errors.New("code not exist")
 }
-

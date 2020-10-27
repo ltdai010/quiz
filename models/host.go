@@ -17,7 +17,6 @@ import (
 var (
 	client *firestore.Client
 	ctx context.Context
-	sa  option.ClientOption
 )
 
 const host = "host"

@@ -30,6 +30,16 @@ func init() {
 				&controllers.TopicController{},
 			),
 		),
+		beego.NSNamespace("/topic",
+			beego.NSInclude(
+				&controllers.TopicController{},
+			),
+		),
+		beego.NSNamespace("/save-game",
+			beego.NSInclude(
+				&controllers.SaveGameController{},
+			),
+		),
 	)
 	beego.AddNamespace(ns)
 }

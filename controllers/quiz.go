@@ -210,7 +210,11 @@ func (u *QuizController) Put() {
 // @router /DeleteQuiz/:qId [delete]
 func (u *QuizController) Delete() {
 	uid := u.GetString(":qId")
-	models.DeleteQuiz(uid)
+	err := models.DeleteQuiz(uid)
+	if err != nil {
+		u.Ctx.WriteString(err.Error())
+		return
+	}
 	u.Data["json"] = "delete success!"
 	u.ServeJSON()
 }

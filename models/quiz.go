@@ -14,6 +14,7 @@ import (
 	"log"
 	"mime/multipart"
 	"quiz/temp"
+	"quiz/utils"
 	"reflect"
 	"strconv"
 )
@@ -80,13 +81,16 @@ func AddQuiz(q Quiz) string {
 		"Question": map[string]interface{}{
 		},
 	})
+	if err != nil {
+		return err.Error()
+	}
 	q_ := Quiz_{
-		ObjectID: q.Name,
+		ObjectID: s.ID,
 		Name: q.Name,
 		NumberOfQuestion: q.NumberOfQuestion,
 		Creator: q.Creator,
 	}
-	index.SaveObject(q_)
+	_, err = index.SaveObject(q_)
 	if err != nil {
 		log.Printf("Failed adding alovelace: %v \n", err)
 	}
@@ -260,6 +264,7 @@ func GetAllQuestion(quizName string) (map[string]*temp.QuestionUpdate, error) {
 				q.Choice3 = value["Choice3"].(string)
 				q.Choice4 = value["Choice4"].(string)
 				questions[key.String()] = &q
+
 			}
 		}
 		return questions, nil
@@ -292,21 +297,36 @@ func UpdateQuiz(name string, q *temp.QuizUpdate) (err error) {
 	return errors.New("quiz not exist")
 }
 
-func SearchForQuiz(key string) ([]Quiz, error) {
+func SearchForQuiz(key string) (map[string]*Quiz, error) {
+	key = utils.RemoveAccent(key)
 	res, err := index.Search(key)
 	if err != nil {
 		return nil, err
 	}
-	var quizzes []Quiz
-	err = res.UnmarshalHits(&quizzes)
+	var qs []*Quiz_
+	quizzes := make(map[string]*Quiz)
+	err = res.UnmarshalHits(&qs)
 	if err != nil {
 		return nil, err
+	}
+	for _, q := range qs {
+		quiz := &Quiz{
+			Creator:          q.Creator,
+			Name:             q.Name,
+			NumberOfQuestion: q.NumberOfQuestion,
+		}
+		quizzes[q.ObjectID] = quiz
 	}
 	return quizzes, nil
 }
 
-func DeleteQuiz(name string) {
-	client.Collection(quiz).Doc(name).Delete(ctx)
+func DeleteQuiz(name string) error {
+	_, err := client.Collection(quiz).Doc(name).Delete(ctx)
+	if err != nil {
+		return err
+	}
+	_, err = index.DeleteObject(name)
+	return err
 }
 
 func GetALlQuizInTopic(topicID string) (map[string]*Quiz, error) {

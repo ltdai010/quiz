@@ -314,6 +314,77 @@ paths:
           description: '{string} update done!'
         "403":
           description: :uid is not int
+  /save-game/DeleteSaveGame/{id}:
+    delete:
+      tags:
+      - save-game
+      description: delete the object
+      operationId: SaveGameController.DeleteSaveGame
+      parameters:
+      - in: path
+        name: id
+        description: The objectId you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "403":
+          description: Id is empty
+  /save-game/GetAllSaveGameOfUser/{userID}:
+    get:
+      tags:
+      - save-game
+      description: get all objects
+      operationId: SaveGameController.GetAllOfUser
+      parameters:
+      - in: path
+        name: userID
+        description: The userID
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.SaveGame'
+        "403":
+          description: :userID is empty
+  /save-game/GetSaveGame/{code}:
+    get:
+      tags:
+      - save-game
+      description: find object by code
+      operationId: SaveGameController.Get
+      parameters:
+      - in: path
+        name: code
+        description: the code you want to get
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{code} models.SaveGame'
+        "403":
+          description: :code is empty
+  /save-game/PostSaveGame:
+    post:
+      tags:
+      - save-game
+      description: create object
+      operationId: SaveGameController.Post
+      parameters:
+      - in: body
+        name: body
+        description: The object content
+        required: true
+        schema:
+          $ref: '#/definitions/models.SaveGame'
+      responses:
+        "200":
+          description: '{string} models.SaveGame'
+        "403":
+          description: body is empty
   /topic/GetAll:
     get:
       tags:
@@ -381,6 +452,16 @@ paths:
         "403":
           description: body is empty
 definitions:
+  models.DoneQuest:
+    title: DoneQuest
+    type: object
+    properties:
+      Answer:
+        type: integer
+        format: int64
+      ChoosedAnswer:
+        type: integer
+        format: int64
   models.Host:
     title: Host
     type: object
@@ -423,6 +504,21 @@ definitions:
       NumberOfQuestion:
         type: integer
         format: int64
+  models.SaveGame:
+    title: SaveGame
+    type: object
+    properties:
+      DoneQuest:
+        type: integer
+        format: int64
+      MapQuest:
+        $ref: '#/definitions/models.DoneQuest'
+      QuizDone:
+        type: boolean
+      QuizID:
+        type: string
+      UserID:
+        type: string
   models.Topic:
     title: Topic
     type: object
@@ -436,6 +532,12 @@ definitions:
       QuizID:
         type: string
       TopicID:
+        type: string
+  models.User:
+    title: User
+    type: object
+    properties:
+      UserName:
         type: string
   temp.HostUpdate:
     title: HostUpdate
@@ -486,3 +588,9 @@ tags:
 - name: topic
   description: |
     Operations about topic
+- name: topic
+  description: |
+    Operations about topic
+- name: save-game
+  description: |
+    Operations about save game
