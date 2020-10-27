@@ -163,12 +163,12 @@ func (u *QuizController) GetAllQuizInTopic() {
 
 // @Title Search
 // @Description get user by uid
-// @Param	key		path 	string	true		"The key for staticblock"
+// @Param	key		query 	string	true		"The key for staticblock"
 // @Success 200 {object} models.Quiz
-// @Failure 403 :key is empty
-// @router /SearchQuiz/:key [get]
+// @Failure 403 key is empty
+// @router /SearchQuiz [get]
 func (u *QuizController) Search() {
-	key := u.GetString(":key")
+	key := u.GetString("key")
 	if key != "" {
 		quizzes, err := models.SearchForQuiz(key)
 		if err != nil {

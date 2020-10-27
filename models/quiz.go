@@ -14,7 +14,6 @@ import (
 	"log"
 	"mime/multipart"
 	"quiz/temp"
-	"quiz/utils"
 	"reflect"
 	"strconv"
 )
@@ -298,7 +297,6 @@ func UpdateQuiz(name string, q *temp.QuizUpdate) (err error) {
 }
 
 func SearchForQuiz(key string) (map[string]*Quiz, error) {
-	key = utils.RemoveAccent(key)
 	res, err := index.Search(key)
 	if err != nil {
 		return nil, err

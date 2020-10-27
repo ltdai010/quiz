@@ -379,7 +379,7 @@
                 }
             }
         },
-        "/quiz/SearchQuiz/{key}": {
+        "/quiz/SearchQuiz": {
             "get": {
                 "tags": [
                     "quiz"
@@ -388,7 +388,7 @@
                 "operationId": "QuizController.Search",
                 "parameters": [
                     {
-                        "in": "path",
+                        "in": "query",
                         "name": "key",
                         "description": "The key for staticblock",
                         "required": true,
@@ -403,7 +403,7 @@
                         }
                     },
                     "403": {
-                        "description": ":key is empty"
+                        "description": "key is empty"
                     }
                 }
             }

@@ -127,7 +127,7 @@ func init() {
     beego.GlobalControllerRouter["quiz/controllers:QuizController"] = append(beego.GlobalControllerRouter["quiz/controllers:QuizController"],
         beego.ControllerComments{
             Method: "Search",
-            Router: "/SearchQuiz/:key",
+            Router: "/SearchQuiz",
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
