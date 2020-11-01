@@ -319,7 +319,7 @@ func GetQuiz(name string) (u *Quiz, err error) {
 		if err != nil {
 			return nil, err
 		}
-		creator, err := doc.DataAt("aa")
+		creator, err := doc.DataAt("Creator")
 		if err != nil {
 			return nil, err
 		}
