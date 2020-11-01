@@ -71,3 +71,33 @@ func GetTopic(topicID string) (*Topic, error) {
 	}
 	return nil, errors.New("code not exist")
 }
+
+func GetALlTopicOfQuiz(quizID string) (map[string]*Topic, error) {
+	iter := client.Collection(topicQuiz).Where("QuizID", "==", quizID).Documents(ctx)
+	mapq := make(map[string]*Topic)
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		var tq TopicQuiz
+		err = doc.DataTo(&tq)
+		if err != nil {
+			return nil, err
+		}
+		topicDoc, err := client.Collection(topic).Doc(tq.TopicID).Get(ctx)
+		if err != nil {
+			return nil, err
+		}
+		var q Topic
+		err = topicDoc.DataTo(&q)
+		if err != nil {
+			return nil, err
+		}
+		mapq[tq.TopicID] = &q
+	}
+	return mapq, nil
+}

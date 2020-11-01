@@ -3,6 +3,7 @@ package models
 import (
 	"cloud.google.com/go/firestore"
 	"google.golang.org/api/iterator"
+	"strconv"
 )
 
 type User struct {
@@ -10,6 +11,7 @@ type User struct {
 }
 
 const USER = "user"
+const PRIORITY = "priority"
 
 func AddUser(user User) string {
 	ref, _, err := client.Collection(USER).Add(ctx, user)
@@ -18,6 +20,36 @@ func AddUser(user User) string {
 	}
 	return ref.ID
 }
+
+func AddPlayedQuiz(quizID string, userID string) error {
+	doc, err := client.Collection(PRIORITY).Doc(userID).Get(ctx)
+	if err != nil {
+		_, err = client.Collection(PRIORITY).Doc(userID).Set(ctx, PriorityQuiz{
+			UserID:        userID,
+			PlayedQuiz: map[string]string{
+				"0" : quizID,
+			},
+		})
+		return err
+	}
+	d, err := doc.DataAt("PlayedQuiz")
+	if err != nil {
+		return err
+	}
+	mapQuizes := d.(map[string]interface{})
+	temp := quizID
+	for i := 0; i < 10; i++ {
+		if v, ok := mapQuizes[strconv.Itoa(i)]; ok {
+			temp = v.(string)
+			mapQuizes[strconv.Itoa(i)] = quizID
+		} else {
+			mapQuizes[strconv.Itoa(i)] = temp
+			break
+		}
+	}
+	return nil
+}
+
 
 func GetUser(id string) (*User, error) {
 	ref := client.Collection(USER).Doc(id)

@@ -25,6 +25,25 @@ func (o *UserController) PostUser() {
 	o.ServeJSON()
 }
 
+// @Title AddPlayedQuiz
+// @Description create object
+// @Param	userID		path 	string	true		"The object content"
+// @Param	quizID		query	string	true		"The quizID"
+// @Success 200 {string} models.User.UserID
+// @Failure 403 body is empty
+// @router /AddPlayedQuiz/:userID [post]
+func (o *UserController) AddPlayedQuiz() {
+	id := o.Ctx.Input.Param(":userID")
+	qid := o.GetString("quizID")
+	err := models.AddPlayedQuiz(qid, id)
+	if err != nil {
+		o.Ctx.WriteString(err.Error())
+		return
+	}
+	o.Data["json"] = "success"
+	o.ServeJSON()
+}
+
 // @Title GetUser
 // @Description find object by code
 // @Param	code		path 	string	true		"the code you want to get"
@@ -89,3 +108,4 @@ func (o *UserController) DeleteUser() {
 	o.Data["json"] = "delete success!"
 	o.ServeJSON()
 }
+

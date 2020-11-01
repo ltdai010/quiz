@@ -283,6 +283,64 @@
                 }
             }
         },
+        "/quiz/GetRecentPlayedQuiz/{id}": {
+            "get": {
+                "tags": [
+                    "quiz"
+                ],
+                "description": "get user by uid",
+                "operationId": "QuizController.GetRecentPlayedQuiz",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Quiz"
+                        }
+                    },
+                    "403": {
+                        "description": ":id is empty"
+                    }
+                }
+            }
+        },
+        "/quiz/GetRecommendedQuiz/{id}": {
+            "get": {
+                "tags": [
+                    "quiz"
+                ],
+                "description": "get user by uid",
+                "operationId": "QuizController.GetRecommendedQuiz",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Quiz"
+                        }
+                    },
+                    "403": {
+                        "description": ":id is empty"
+                    }
+                }
+            }
+        },
         "/quiz/PostImage": {
             "post": {
                 "tags": [
@@ -404,6 +462,32 @@
                     },
                     "403": {
                         "description": "key is empty"
+                    }
+                }
+            }
+        },
+        "/quiz/StartQuiz/{uid}": {
+            "put": {
+                "tags": [
+                    "quiz"
+                ],
+                "description": "update the user",
+                "operationId": "QuizController.StartQuiz",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "uid",
+                        "description": "The uid you want to update",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} update done!"
+                    },
+                    "403": {
+                        "description": ":uid is not int"
                     }
                 }
             }
@@ -604,6 +688,35 @@
                 }
             }
         },
+        "/topic/GetAllTopicOfQuiz/{id}": {
+            "get": {
+                "tags": [
+                    "topic"
+                ],
+                "description": "get user by uid",
+                "operationId": "TopicController.GetAllTopicOfQuiz",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Quiz"
+                        }
+                    },
+                    "403": {
+                        "description": ":id is empty"
+                    }
+                }
+            }
+        },
         "/topic/GetTopic/{id}": {
             "get": {
                 "tags": [
@@ -688,6 +801,177 @@
                     }
                 }
             }
+        },
+        "/user/AddPlayedQuiz/{userID}": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "description": "create object",
+                "operationId": "UserController.AddPlayedQuiz",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "userID",
+                        "description": "The object content",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "quizID",
+                        "description": "The quizID",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} models.User.UserID"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/user/DeleteUser/{Id}": {
+            "delete": {
+                "tags": [
+                    "user"
+                ],
+                "description": "delete the object",
+                "operationId": "UserController.DeleteUser",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "Id",
+                        "description": "The objectId you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} delete success!"
+                    },
+                    "403": {
+                        "description": "Id is empty"
+                    }
+                }
+            }
+        },
+        "/user/GetAllUser": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "description": "get all objects",
+                "operationId": "UserController.GetAllUser",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Host"
+                        }
+                    },
+                    "403": {
+                        "description": "empty"
+                    }
+                }
+            }
+        },
+        "/user/GetUser/{code}": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "description": "find object by code",
+                "operationId": "UserController.GetUser",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "code",
+                        "description": "the code you want to get",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{code} models.User"
+                    },
+                    "403": {
+                        "description": ":code is empty"
+                    }
+                }
+            }
+        },
+        "/user/PostUser": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "description": "create object",
+                "operationId": "UserController.PostUser",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The object content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} models.User.UserID"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/user/UpdateUser/{userID}": {
+            "put": {
+                "tags": [
+                    "user"
+                ],
+                "description": "update the object",
+                "operationId": "UserController.UpdateUser",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "userID",
+                        "description": "The host you want to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Host"
+                        }
+                    },
+                    "403": {
+                        "description": ":hostId is empty"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -754,6 +1038,10 @@
             "title": "Quiz",
             "type": "object",
             "properties": {
+                "Counter": {
+                    "type": "integer",
+                    "format": "int64"
+                },
                 "Creator": {
                     "type": "string"
                 },
@@ -896,6 +1184,10 @@
         {
             "name": "save-game",
             "description": "Operations about save game\n"
+        },
+        {
+            "name": "user",
+            "description": "Operations about host\n"
         }
     ]
 }

@@ -161,6 +161,44 @@ func (u *QuizController) GetAllQuizInTopic() {
 	u.ServeJSON()
 }
 
+// @Title GetRecentPlayedQuiz
+// @Description get user by uid
+// @Param	id		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.Quiz
+// @Failure 403 :id is empty
+// @router /GetRecentPlayedQuiz/:id [get]
+func (u *QuizController) GetRecentPlayedQuiz() {
+	uid := u.Ctx.Input.Param(":id")
+	if uid != "" {
+		quizs, err := models.GetRecentPlayedQuiz(uid)
+		if err != nil {
+			u.Data["json"] = err.Error()
+		} else {
+			u.Data["json"] = quizs
+		}
+	}
+	u.ServeJSON()
+}
+
+// @Title GetRecommendedQuiz
+// @Description get user by uid
+// @Param	id		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.Quiz
+// @Failure 403 :id is empty
+// @router /GetRecommendedQuiz/:id [get]
+func (u *QuizController) GetRecommendedQuiz() {
+	uid := u.Ctx.Input.Param(":id")
+	if uid != "" {
+		quizs, err := models.GetRecommendQuiz(uid)
+		if err != nil {
+			u.Data["json"] = err.Error()
+		} else {
+			u.Data["json"] = quizs
+		}
+	}
+	u.ServeJSON()
+}
+
 // @Title Search
 // @Description get user by uid
 // @Param	key		query 	string	true		"The key for staticblock"
@@ -193,6 +231,25 @@ func (u *QuizController) Put() {
 		var user temp.QuizUpdate
 		json.Unmarshal(u.Ctx.Input.RequestBody, &user)
 		err := models.UpdateQuiz(uid, &user)
+		if err != nil {
+			u.Data["json"] = err.Error()
+		} else {
+			u.Data["json"] = "update success"
+		}
+	}
+	u.ServeJSON()
+}
+
+// @Title StartQuiz
+// @Description update the user
+// @Param	uid		path 	string	true		"The uid you want to update"
+// @Success 200 {string} update done!
+// @Failure 403 :uid is not int
+// @router /StartQuiz/:uid [put]
+func (u *QuizController) StartQuiz() {
+	uid := u.GetString(":uid")
+	if uid != "" {
+		err := models.StartQuiz(uid)
 		if err != nil {
 			u.Data["json"] = err.Error()
 		} else {

@@ -58,6 +58,25 @@ func (u *TopicController) GetTopic() {
 	u.ServeJSON()
 }
 
+// @Title GetAllTopicOfQuiz
+// @Description get user by uid
+// @Param	id		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.Quiz
+// @Failure 403 :id is empty
+// @router /GetAllTopicOfQuiz/:id [get]
+func (u *TopicController) GetAllTopicOfQuiz() {
+	uid := u.Ctx.Input.Param(":id")
+	if uid != "" {
+		topics, err := models.GetALlTopicOfQuiz(uid)
+		if err != nil {
+			u.Data["json"] = err.Error()
+		} else {
+			u.Data["json"] = topics
+		}
+	}
+	u.ServeJSON()
+}
+
 // @Title PostQuizToTopic
 // @Description create users
 // @Param	body		body 	models.TopicQuiz	true		"body for user content"

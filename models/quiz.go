@@ -24,7 +24,7 @@ var (
 	bucket  *storage.BucketHandle
 )
 
-const quiz = "quiz"
+const QUIZ = "quiz"
 
 func init() {
 	clientS = search.NewClient("75E8OZCPI1", "f5c16b7cfd3f10ac4841cddcd762acb4")
@@ -49,9 +49,10 @@ func init() {
 }
 
 type Quiz struct {
-	Creator string
-	Name string
+	Creator 		 string
+	Name 			 string
 	NumberOfQuestion int
+	Counter			 int
 }
 
 type Quiz_ struct {
@@ -60,6 +61,15 @@ type Quiz_ struct {
 	Creator string
 	Name string
 	NumberOfQuestion int
+}
+
+type Counter struct {
+	counter int
+}
+
+type PriorityQuiz struct {
+	UserID	string
+	PlayedQuiz map[string]string
 }
 
 type Question struct {
@@ -73,12 +83,13 @@ type Question struct {
 }
 
 func AddQuiz(q Quiz) string {
-	s, _, err := client.Collection(quiz).Add(ctx, map[string]interface{}{
+	s, _, err := client.Collection(QUIZ).Add(ctx, map[string]interface{}{
 		"Name":             q.Name,
 		"NumberOfQuestion": q.NumberOfQuestion,
 		"Creator":          q.Creator,
 		"Question": map[string]interface{}{
 		},
+		"Counter": 0,
 	})
 	if err != nil {
 		return err.Error()
@@ -96,10 +107,112 @@ func AddQuiz(q Quiz) string {
 	return s.ID
 }
 
-func UpdateQuestion(name string, questions map[string]Question) string {
-	doc, err := client.Collection(quiz).Doc(name).Get(ctx)
+func GetRecentPlayedQuiz(userID string) (map[string]*Quiz, error) {
+	doc, err := client.Collection(PRIORITY).Doc(userID).Get(ctx)
 	if err != nil {
-		return "quiz not found"
+		return nil, err
+	}
+	var p PriorityQuiz
+	err = doc.DataTo(&p)
+	if err != nil {
+		return nil, err
+	}
+	mapQuiz := make(map[string]*Quiz)
+	for _, v := range p.PlayedQuiz {
+		doc, err = client.Collection(QUIZ).Doc(v).Get(ctx)
+		if err != nil {
+			return nil, err
+		}
+		var q Quiz
+		err = doc.DataTo(&q)
+		if err != nil {
+			return nil, err
+		}
+		mapQuiz[v] = &q
+	}
+	return mapQuiz, nil
+}
+
+func GetRecommendQuiz(userID string) (map[string]*Quiz, error) {
+	doc, err := client.Collection(PRIORITY).Doc(userID).Get(ctx)
+	if err != nil {
+		return nil, err
+	}
+	var p PriorityQuiz
+	err = doc.DataTo(&p)
+	if err != nil {
+		return nil, err
+	}
+	mapQuiz := make(map[string]*Quiz)
+	mapTopic := make(map[string]string)
+	for _, v := range p.PlayedQuiz {
+		query := client.Collection(topicQuiz).Where("QuizID", "==", v).Documents(ctx)
+		for {
+			doc, err := query.Next()
+			if err == iterator.Done {
+				break
+			}
+			if err != nil {
+				return nil, err
+			}
+			tq, err := doc.DataAt("TopicID")
+			if err != nil {
+				return nil, err
+			}
+			mapTopic[tq.(string)] = tq.(string)
+		}
+	}
+	for _, v := range mapTopic {
+		query := client.Collection(topicQuiz).Where("TopicID", "==", v).Documents(ctx)
+		for {
+			doc, err := query.Next()
+			if err == iterator.Done {
+				break
+			}
+			if err != nil {
+				return nil, err
+			}
+			var tq Quiz
+			quizID, err := doc.DataAt("QuizID")
+			if err != nil {
+				return nil, err
+			}
+			docQuiz, err := client.Collection(QUIZ).Doc(quizID.(string)).Get(ctx)
+			if err != nil {
+				return nil, err
+			}
+			err = docQuiz.DataTo(&tq)
+			mapQuiz[quizID.(string)] = &tq
+		}
+	}
+	return mapQuiz, nil
+}
+
+
+func StartQuiz(quizID string) error {
+	doc, err := client.Collection(QUIZ).Doc(quizID).Get(ctx)
+	if err != nil {
+		return err
+	}
+	a, err := doc.DataAt("counter")
+	if err != nil {
+		_, err = client.Collection(QUIZ).Doc(quizID).Set(ctx, map[string]interface{} {
+			"counter" : 1,
+		}, firestore.MergeAll)
+		return err
+	}
+	i := a.(int64)
+	i++
+	_, err = client.Collection(QUIZ).Doc(quizID).Set(ctx, map[string]interface{} {
+		"counter" : i,
+	}, firestore.MergeAll)
+	return err
+}
+
+func UpdateQuestion(name string, questions map[string]Question) string {
+	doc, err := client.Collection(QUIZ).Doc(name).Get(ctx)
+	if err != nil {
+		return "QUIZ not found"
 	}
 	list, err := doc.DataAt("Question")
 	if err != nil {
@@ -117,14 +230,14 @@ func UpdateQuestion(name string, questions map[string]Question) string {
 	if v.Kind() != reflect.Map {
 		return "wrong type"
 	}
-	_, err = client.Collection(quiz).Doc(name).Set(ctx, map[string]interface{}{
+	_, err = client.Collection(QUIZ).Doc(name).Set(ctx, map[string]interface{}{
 		"Creator":			creator,
 		"Name"	:			name,
 		"NumberOfQuestion":	number,
 		"Question": map[string]interface{}{},
 	})
 	for i, v := range questions {
-		_, err := client.Collection(quiz).Doc(name).Set(ctx, map[string]interface{}{
+		_, err := client.Collection(QUIZ).Doc(name).Set(ctx, map[string]interface{}{
 			"Creator":			creator,
 			"Name"	:			name,
 			"NumberOfQuestion":	number,
@@ -147,7 +260,7 @@ func UpdateQuestion(name string, questions map[string]Question) string {
 }
 
 func AddQuestions(name string, questions map[string]Question) string {
-	doc, err := client.Collection(quiz).Doc(name).Get(ctx)
+	doc, err := client.Collection(QUIZ).Doc(name).Get(ctx)
 	if err != nil {
 		return "quiz not found"
 	}
@@ -160,7 +273,7 @@ func AddQuestions(name string, questions map[string]Question) string {
 		return "wrong type"
 	}
 	for i, v := range questions {
-		_, err := client.Collection(quiz).Doc(name).Set(ctx, map[string]interface{}{
+		_, err := client.Collection(QUIZ).Doc(name).Set(ctx, map[string]interface{}{
 			"Question": map[string]interface{}{
 				i: map[string]interface{}{
 					"Question": v.Question,
@@ -199,14 +312,14 @@ func GetQuizInfo(ctx context.Context, ref *firestore.DocumentRef) (*firestore.Do
 }
 
 func GetQuiz(name string) (u *Quiz, err error) {
-	ref := client.Collection(quiz).Doc(name)
+	ref := client.Collection(QUIZ).Doc(name)
 	if doc, err := GetQuizInfo(ctx, ref); err == nil {
 		var q Quiz
 		name, err := doc.DataAt("Name")
 		if err != nil {
 			return nil, err
 		}
-		creator, err := doc.DataAt("Creator")
+		creator, err := doc.DataAt("aa")
 		if err != nil {
 			return nil, err
 		}
@@ -222,11 +335,11 @@ func GetQuiz(name string) (u *Quiz, err error) {
 		}
 		return &q, nil
 	}
-	return nil, errors.New("quiz not exists")
+	return nil, errors.New("QUIZ not exists")
 }
 
 func GetAllQuiz() map[string]*Quiz {
-	list := client.Collection(quiz).Documents(ctx)
+	list := client.Collection(QUIZ).Documents(ctx)
 	quizzes := make(map[string]*Quiz)
 	for{
 		var q Quiz
@@ -244,7 +357,7 @@ func GetAllQuiz() map[string]*Quiz {
 }
 
 func GetAllQuestion(quizName string) (map[string]*temp.QuestionUpdate, error) {
-	ref := client.Collection(quiz).Doc(quizName)
+	ref := client.Collection(QUIZ).Doc(quizName)
 	if doc, err := GetQuizInfo(ctx, ref); err == nil {
 		questions := make(map[string]*temp.QuestionUpdate)
 		list, err := doc.DataAt("Question")
@@ -272,7 +385,7 @@ func GetAllQuestion(quizName string) (map[string]*temp.QuestionUpdate, error) {
 }
 
 func UpdateQuiz(name string, q *temp.QuizUpdate) (err error) {
-	ref := client.Collection(quiz).Doc(name)
+	ref := client.Collection(QUIZ).Doc(name)
 	doc, err := ref.Get(ctx)
 	if err != nil {
 		return err
@@ -283,7 +396,7 @@ func UpdateQuiz(name string, q *temp.QuizUpdate) (err error) {
 	}
 	s := fmt.Sprint(v)
 	if _, err := GetQuizInfo(ctx, ref); err == nil {
-		_, err = client.Collection(quiz).Doc(name).Set(ctx, map[string]interface{}{
+		_, err = client.Collection(QUIZ).Doc(name).Set(ctx, map[string]interface{}{
 			"Name":    name,
 			"NumberOfQuestion":   q.NumberOfQuestion,
 			"Creator": s,
@@ -319,7 +432,7 @@ func SearchForQuiz(key string) (map[string]*Quiz, error) {
 }
 
 func DeleteQuiz(name string) error {
-	_, err := client.Collection(quiz).Doc(name).Delete(ctx)
+	_, err := client.Collection(QUIZ).Doc(name).Delete(ctx)
 	if err != nil {
 		return err
 	}
@@ -343,7 +456,7 @@ func GetALlQuizInTopic(topicID string) (map[string]*Quiz, error) {
 		if err != nil {
 			return nil, err
 		}
-		quizDoc, err := client.Collection(quiz).Doc(tq.QuizID).Get(ctx)
+		quizDoc, err := client.Collection(QUIZ).Doc(tq.QuizID).Get(ctx)
 		if err != nil {
 			return nil, err
 		}
