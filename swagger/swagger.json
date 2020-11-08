@@ -225,6 +225,35 @@
                 }
             }
         },
+        "/quiz/GetAllImageLink/{quizid}": {
+            "get": {
+                "tags": [
+                    "quiz"
+                ],
+                "description": "get all questions",
+                "operationId": "QuizController.GetAllImageLink",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "quizid",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Question"
+                        }
+                    },
+                    "403": {
+                        "description": ":quizid is not exist"
+                    }
+                }
+            }
+        },
         "/quiz/GetAllQuest/{quizid}": {
             "get": {
                 "tags": [

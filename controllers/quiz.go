@@ -100,6 +100,25 @@ func (u *QuizController) GetAllQuest() {
 	u.ServeJSON()
 }
 
+// @Title GetAllImageLink
+// @Description get all questions
+// @Param	quizid		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.Question
+// @Failure 403 :quizid is not exist
+// @router /GetAllImageLink/:quizid [get]
+func (u *QuizController) GetAllImageLink() {
+	name := u.GetString(":quizid")
+	if name != "" {
+		links, err := models.GetAllImageLinkInQuestion(name)
+		if err != nil {
+			u.Data["json"] = err
+		} else {
+			u.Data["json"] = links
+		}
+	}
+	u.ServeJSON()
+}
+
 // @Title PostImage
 // @Description create users
 // @Param	file		formData 	file	true		"image"

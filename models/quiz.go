@@ -384,6 +384,23 @@ func GetAllQuestion(quizName string) (map[string]*temp.QuestionUpdate, error) {
 	return nil, errors.New("quiz not exists")
 }
 
+func GetAllImageLinkInQuestion(quizName string) (map[string]string, error) {
+	list, err := client.Collection(QUIZ).Doc(quizName).Get(ctx)
+	if err != nil {
+		return nil, err
+	}
+	a, err := list.DataAt("Question")
+	quests := a.(map[string]interface{})
+	if err != nil {
+		return nil, err
+	}
+	mapLink := map[string]string{}
+	for k, _ := range quests {
+		mapLink[k] = "storage.googleapis.com/quiz-010.appspot.com/" + quizName + "-" + k
+	}
+	return mapLink, nil
+}
+
 func UpdateQuiz(name string, q *temp.QuizUpdate) (err error) {
 	ref := client.Collection(QUIZ).Doc(name)
 	doc, err := ref.Get(ctx)
@@ -439,6 +456,7 @@ func DeleteQuiz(name string) error {
 	_, err = index.DeleteObject(name)
 	return err
 }
+
 
 func GetALlQuizInTopic(topicID string) (map[string]*Quiz, error) {
 	iter := client.Collection(topicQuiz).Where("TopicID", "==", topicID).Documents(ctx)

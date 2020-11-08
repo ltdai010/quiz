@@ -1,7 +1,6 @@
 package models
 
 import (
-	"cloud.google.com/go/firestore"
 	"google.golang.org/api/iterator"
 	"strconv"
 )
@@ -86,6 +85,6 @@ func DeleteUser(id string) error {
 }
 
 func UpdateUser(id string, user User) error {
-	_, err := client.Collection(USER).Doc(id).Set(ctx, user, firestore.MergeAll)
+	_, err := client.Collection(USER).Doc(id).Set(ctx, User{UserName: user.UserName})
 	return err
 }
