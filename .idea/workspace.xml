@@ -20,14 +20,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ebc42cfe-e6c2-487d-a1c3-987d0bc0e18b" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/models/challenge.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/websocket/models/answer_model.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/websocket/models/join_models.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/quiz.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/quiz.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/host.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/host.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/save_game.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/save_game.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/websocket_play.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/lastupdate.tmp" beforeDir="false" afterPath="$PROJECT_DIR$/lastupdate.tmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/quiz.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/quiz.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/host.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/host.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/save_game.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/save_game.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routers/commentsRouter_controllers.go" beforeDir="false" afterPath="$PROJECT_DIR$/routers/commentsRouter_controllers.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/swagger/swagger.json" beforeDir="false" afterPath="$PROJECT_DIR$/swagger/swagger.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/swagger/swagger.yml" beforeDir="false" afterPath="$PROJECT_DIR$/swagger/swagger.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/temp/template.go" beforeDir="false" afterPath="$PROJECT_DIR$/temp/template.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,9 +95,10 @@
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="690" y="254" width="530" height="605" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1601885601691" />
-    <state x="227" y="132" width="1271" height="948" key="SettingsEditor" timestamp="1602774339564">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state x="218" y="138" width="1271" height="948" key="SettingsEditor" timestamp="1604819947094">
+      <screen x="0" y="34" width="1848" height="1046" />
     </state>
     <state x="227" y="132" width="1271" height="948" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1602774339564" />
+    <state x="218" y="138" key="SettingsEditor/0.34.1848.1046@0.34.1848.1046" timestamp="1604819947094" />
   </component>
 </project>

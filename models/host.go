@@ -6,25 +6,26 @@ import (
 	"crypto/rand"
 	"errors"
 	firebase "firebase.google.com/go"
+	"fmt"
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 	"log"
 	"math/big"
-	"quiz/temp"
 	"strconv"
 )
 
 var (
 	client *firestore.Client
-	ctx context.Context
+	ctx    context.Context
 )
 
 const host = "host"
 
 type Host struct {
-	Name 	   			string
-	Code       			int
-	NumberOfParticipant int
+	QuizID         string
+	Owner          string
+	MapParticipant map[string]string
+	MapScore       map[string]int
 }
 
 func generateCode() int {
@@ -69,23 +70,15 @@ func init() {
 
 }
 
-func AddHost(ht temp.HostUpdate) int {
-	var h Host
-	h.Code = generateCode()
-	h.Name = ht.Name
-	h.NumberOfParticipant = ht.NumberOfParticipant
-	s := strconv.Itoa(h.Code)
-	_, err := client.Collection(host).Doc(s).Set(ctx, map[string]interface{}{
-		"Name":    h.Name,
-		"NumberOfParticipant":   h.NumberOfParticipant,
-		"Code": h.Code,
-	})
+func AddHost(ht Host) int {
+	code := generateCode()
+	s := fmt.Sprint(code)
+	_, err := client.Collection(host).Doc(s).Set(ctx, ht)
 	if err != nil {
 		log.Fatalf("Failed adding alovelace: %v", err)
 	}
-	return h.Code
+	return code
 }
-
 
 func GetHostInfo(ctx context.Context, ref *firestore.DocumentRef) (*firestore.DocumentSnapshot, error) {
 	doc, err := ref.Get(ctx)
@@ -108,10 +101,10 @@ func GetOne(code int) (object *Host, err error) {
 	return nil, errors.New("code not exist")
 }
 
-func GetAllHost() map[int]*Host {
+func GetAllHost() map[string]*Host {
 	list := client.Collection(host).Documents(ctx)
-	hosts := make(map[int]*Host)
-	for{
+	hosts := make(map[string]*Host)
+	for {
 		var h Host
 		doc, err := list.Next()
 		if err == iterator.Done {
@@ -124,20 +117,16 @@ func GetAllHost() map[int]*Host {
 		if err != nil {
 			return nil
 		}
-		hosts[h.Code] = &h
+		hosts[doc.Ref.ID] = &h
 	}
 	return hosts
 }
 
-func Update(code int, h *temp.HostUpdate) (err error) {
+func Update(code int, h *Host) (err error) {
 	sCode := strconv.Itoa(code)
 	ref := client.Collection(host).Doc(sCode)
 	if _, err := GetHostInfo(ctx, ref); err == nil {
-		_, err = client.Collection(host).Doc(sCode).Set(ctx, map[string]interface{}{
-			"Name":    h.Name,
-			"NumberOfParticipant":   h.NumberOfParticipant,
-			"Code": code,
-		}, firestore.MergeAll)
+		_, err = client.Collection(host).Doc(sCode).Set(ctx, h, firestore.MergeAll)
 		if err != nil {
 			return err
 		}
@@ -146,7 +135,24 @@ func Update(code int, h *temp.HostUpdate) (err error) {
 	return errors.New("code not exist")
 }
 
+func PostScore(code string, score int, userID string) error {
+	_, err := client.Collection(host).Doc(code).Set(ctx, map[string]interface{}{
+		"MapScore": map[string]int{
+			userID: score,
+		},
+	}, firestore.MergeAll)
+	return err
+}
+
+func AddUserToHost(code string, userID string, username string) error {
+	_, err := client.Collection(host).Doc(code).Set(ctx, map[string]interface{}{
+		"MapParticipant": map[string]string{
+			userID: username,
+		},
+	}, firestore.MergeAll)
+	return err
+}
+
 func Delete(Code int) {
 	client.Collection(host).Doc(strconv.Itoa(Code)).Delete(ctx)
 }
-

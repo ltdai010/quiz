@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/astaxie/beego"
+	"log"
 	"quiz/models"
 )
 
@@ -19,7 +20,8 @@ type SaveGameController struct {
 // @router /PostSaveGame [post]
 func (o *SaveGameController) Post() {
 	var ob models.SaveGame
-	json.Unmarshal(o.Ctx.Input.RequestBody, &ob)
+	err := json.Unmarshal(o.Ctx.Input.RequestBody, &ob)
+	log.Println(err)
 	id := models.AddSaveGame(ob)
 	o.Data["json"] = map[string]string{"Id": id}
 	o.ServeJSON()

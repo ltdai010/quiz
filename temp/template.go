@@ -4,10 +4,6 @@ type QuizUpdate struct {
 	NumberOfQuestion int
 }
 
-type HostUpdate struct {
-	Name       			string
-	NumberOfParticipant int
-}
 
 type QuizReceived struct {
 	Creator string

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"log"
 	"quiz/models"
-	"quiz/temp"
 	"strconv"
 
 	"github.com/astaxie/beego"
@@ -17,13 +16,17 @@ type HostController struct {
 
 // @Title Post
 // @Description create object
-// @Param	body		body 	temp.HostUpdate	true		"The object content"
+// @Param	body		body 	models.Host	true		"The object content"
 // @Success 200 {string} models.Host.Name
 // @Failure 403 body is empty
 // @router /PostHost [post]
 func (o *HostController) Post() {
-	var ob temp.HostUpdate
-	json.Unmarshal(o.Ctx.Input.RequestBody, &ob)
+	var ob models.Host
+	err := json.Unmarshal(o.Ctx.Input.RequestBody, &ob)
+	if err != nil {
+		o.Ctx.WriteString(err.Error())
+		return
+	}
 	id := models.AddHost(ob)
 	o.Data["json"] = map[string]int{"Id": id}
 	o.ServeJSON()
@@ -64,7 +67,7 @@ func (o *HostController) GetAll() {
 // @Title Update
 // @Description update the object
 // @Param	hostId		path 	string	true		"The host you want to update"
-// @Param	body		body 	temp.HostUpdate	true		"The body"
+// @Param	body		body 	models.Host	true		"The body"
 // @Success 200 {object} models.Host
 // @Failure 403 :hostId is empty
 // @router /UpdateAHost/:hostId [put]
@@ -74,7 +77,7 @@ func (o *HostController) Put() {
 	if err != nil {
 		o.Data["json"] = err.Error()
 	}
-	var ob temp.HostUpdate
+	var ob models.Host
 	json.Unmarshal(o.Ctx.Input.RequestBody, &ob)
 	err = models.Update(code, &ob)
 	if err != nil {
@@ -102,3 +105,48 @@ func (o *HostController) Delete() {
 	o.ServeJSON()
 }
 
+// @Title AddUser
+// @Description create object
+// @Param	code		path 	string	true		"The host code"
+// @Param	userID		query	string	true		"The user code"
+// @Param	username	query	string	true		"The username"
+// @Success 200 {string} success
+// @Failure 403 body is empty
+// @router /:code/AddUser [post]
+func (o *HostController) AddUser() {
+	code := o.Ctx.Input.Param(":code")
+	userID := o.GetString("userID")
+	username := o.GetString("username")
+	err := models.AddUserToHost(code, userID, username)
+	if err != nil {
+		o.Ctx.WriteString(err.Error())
+		return
+	}
+	o.Data["json"] = "success"
+	o.ServeJSON()
+}
+
+// @Title PostScore
+// @Description create object
+// @Param	code		path 	string	true		"The host code"
+// @Param	score		query	int		true		"The user code"
+// @Param	username	query	string	true		"The username"
+// @Success 200 {string} models.Host.Name
+// @Failure 403 body is empty
+// @router /:code/PostScore [post]
+func (o *HostController) PostScore() {
+	code := o.Ctx.Input.Param(":code")
+	score, err := o.GetInt("score")
+	if err != nil {
+		o.Ctx.WriteString(err.Error())
+		return
+	}
+	username := o.GetString("username")
+	err = models.PostScore(code, score, username)
+	if err != nil {
+		o.Ctx.WriteString(err.Error())
+		return
+	}
+	o.Data["json"] = "success"
+	o.ServeJSON()
+}

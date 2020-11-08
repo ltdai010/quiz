@@ -9,6 +9,24 @@ func init() {
 
     beego.GlobalControllerRouter["quiz/controllers:HostController"] = append(beego.GlobalControllerRouter["quiz/controllers:HostController"],
         beego.ControllerComments{
+            Method: "AddUser",
+            Router: "/:code/AddUser",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["quiz/controllers:HostController"] = append(beego.GlobalControllerRouter["quiz/controllers:HostController"],
+        beego.ControllerComments{
+            Method: "PostScore",
+            Router: "/:code/PostScore",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["quiz/controllers:HostController"] = append(beego.GlobalControllerRouter["quiz/controllers:HostController"],
+        beego.ControllerComments{
             Method: "Delete",
             Router: "/DeleteAHost/:Id",
             AllowHTTPMethods: []string{"delete"},

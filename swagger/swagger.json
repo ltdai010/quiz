@@ -101,7 +101,7 @@
                         "description": "The object content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/temp.HostUpdate"
+                            "$ref": "#/definitions/models.Host"
                         }
                     }
                 ],
@@ -136,7 +136,7 @@
                         "description": "The body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/temp.HostUpdate"
+                            "$ref": "#/definitions/models.Host"
                         }
                     }
                 ],
@@ -149,6 +149,87 @@
                     },
                     "403": {
                         "description": ":hostId is empty"
+                    }
+                }
+            }
+        },
+        "/host/{code}/AddUser": {
+            "post": {
+                "tags": [
+                    "host"
+                ],
+                "description": "create object",
+                "operationId": "HostController.AddUser",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "code",
+                        "description": "The host code",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "userID",
+                        "description": "The user code",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "username",
+                        "description": "The username",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} success"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/host/{code}/PostScore": {
+            "post": {
+                "tags": [
+                    "host"
+                ],
+                "description": "create object",
+                "operationId": "HostController.PostScore",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "code",
+                        "description": "The host code",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "score",
+                        "description": "The user code",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "username",
+                        "description": "The username",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} models.Host.Name"
+                    },
+                    "403": {
+                        "description": "body is empty"
                     }
                 }
             }
@@ -1004,34 +1085,26 @@
         }
     },
     "definitions": {
-        "models.DoneQuest": {
-            "title": "DoneQuest",
-            "type": "object",
-            "properties": {
-                "Answer": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "ChoosedAnswer": {
-                    "type": "integer",
-                    "format": "int64"
-                }
-            }
-        },
         "models.Host": {
             "title": "Host",
             "type": "object",
             "properties": {
-                "Code": {
-                    "type": "integer",
-                    "format": "int64"
+                "MapParticipant": {
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 },
-                "Name": {
+                "MapScore": {
+                    "additionalProperties": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                },
+                "Owner": {
                     "type": "string"
                 },
-                "NumberOfParticipant": {
-                    "type": "integer",
-                    "format": "int64"
+                "QuizID": {
+                    "type": "string"
                 }
             }
         },
@@ -1091,8 +1164,12 @@
                     "type": "integer",
                     "format": "int64"
                 },
-                "MapQuest": {
-                    "$ref": "#/definitions/models.DoneQuest"
+                "ListAnsweredQuest": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
                 },
                 "QuizDone": {
                     "type": "boolean"
@@ -1132,19 +1209,6 @@
             "properties": {
                 "UserName": {
                     "type": "string"
-                }
-            }
-        },
-        "temp.HostUpdate": {
-            "title": "HostUpdate",
-            "type": "object",
-            "properties": {
-                "Name": {
-                    "type": "string"
-                },
-                "NumberOfParticipant": {
-                    "type": "integer",
-                    "format": "int64"
                 }
             }
         },

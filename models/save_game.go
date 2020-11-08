@@ -11,12 +11,7 @@ type SaveGame struct {
 	QuizID    string
 	DoneQuest int
 	QuizDone  bool
-	MapQuest  map[string]DoneQuest
-}
-
-type DoneQuest struct {
-	ChoosedAnswer int
-	Answer        int
+	ListAnsweredQuest  []int
 }
 
 func AddSaveGame(saveGame SaveGame) string {
