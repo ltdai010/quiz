@@ -70,14 +70,14 @@ func init() {
 
 }
 
-func AddHost(ht Host) int {
+func AddHost(ht Host) string {
 	code := generateCode()
 	s := fmt.Sprint(code)
 	_, err := client.Collection(host).Doc(s).Set(ctx, ht)
 	if err != nil {
 		log.Fatalf("Failed adding alovelace: %v", err)
 	}
-	return code
+	return s
 }
 
 func GetHostInfo(ctx context.Context, ref *firestore.DocumentRef) (*firestore.DocumentSnapshot, error) {

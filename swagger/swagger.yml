@@ -764,9 +764,6 @@ definitions:
     title: SaveGame
     type: object
     properties:
-      DoneQuest:
-        type: integer
-        format: int64
       ListAnsweredQuest:
         type: array
         items:

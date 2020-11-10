@@ -28,7 +28,7 @@ func (o *HostController) Post() {
 		return
 	}
 	id := models.AddHost(ob)
-	o.Data["json"] = map[string]int{"Id": id}
+	o.Data["json"] = map[string]string{"Id": id}
 	o.ServeJSON()
 }
 

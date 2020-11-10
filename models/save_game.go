@@ -9,7 +9,6 @@ const SAVE_GAME = "saveGame"
 type SaveGame struct {
 	UserID    string
 	QuizID    string
-	DoneQuest int
 	QuizDone  bool
 	ListAnsweredQuest  []int
 }
