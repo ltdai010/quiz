@@ -7,7 +7,7 @@ import (
 	"errors"
 	firebase "firebase.google.com/go"
 	"fmt"
-	"github.com/algolia/algoliasearch-client-go/algolia/search"
+	"github.com/algolia/algoliasearch-client-go/v3/algolia/search"
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 	"io"
