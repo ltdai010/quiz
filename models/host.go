@@ -54,10 +54,6 @@ func isExist(code int) bool {
 
 func init() {
 	ctx = context.Background()
-	_, err := firebase.NewApp(ctx, nil)
-	if err != nil {
-		log.Fatalf("error initializing app: %v\n", err)
-	}
 	sa := option.WithCredentialsFile("account/quiz-010-adafd5469f01.json")
 	app, err := firebase.NewApp(ctx, nil, sa)
 	if err != nil {

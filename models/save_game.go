@@ -14,6 +14,7 @@ type SaveGame struct {
 }
 
 func AddSaveGame(saveGame SaveGame) string {
+	//check if already exist
 	ref, _, err := client.Collection(SAVE_GAME).Add(ctx, saveGame)
 	if err != nil {
 		return err.Error()
@@ -56,4 +57,9 @@ func GetAllSaveGameByUser(userID string) (map[string]*SaveGame, error) {
 		mapS[doc.Ref.ID] = s
 	}
 	return mapS, nil
+}
+
+func UpdateSaveGame(id string, saveGame SaveGame) error {
+	_, err := client.Collection(SAVE_GAME).Doc(id).Set(ctx, saveGame)
+	return err
 }

@@ -1045,6 +1045,44 @@
                 }
             }
         },
+        "/user/UpdateSaveGame/{savegame-id}": {
+            "put": {
+                "tags": [
+                    "user"
+                ],
+                "description": "update the object",
+                "operationId": "UserController.UpdateSaveGame",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "savegame-id",
+                        "description": "The host you want to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SaveGame"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Host"
+                        }
+                    },
+                    "403": {
+                        "description": ":savegame-id is empty"
+                    }
+                }
+            }
+        },
         "/user/UpdateUser/{userID}": {
             "put": {
                 "tags": [

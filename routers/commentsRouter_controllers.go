@@ -333,6 +333,15 @@ func init() {
 
     beego.GlobalControllerRouter["quiz/controllers:UserController"] = append(beego.GlobalControllerRouter["quiz/controllers:UserController"],
         beego.ControllerComments{
+            Method: "UpdateSaveGame",
+            Router: "/UpdateSaveGame/:savegame-id",
+            AllowHTTPMethods: []string{"put"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["quiz/controllers:UserController"] = append(beego.GlobalControllerRouter["quiz/controllers:UserController"],
+        beego.ControllerComments{
             Method: "UpdateUser",
             Router: "/UpdateUser/:userID",
             AllowHTTPMethods: []string{"put"},
