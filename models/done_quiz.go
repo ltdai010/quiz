@@ -42,3 +42,7 @@ func GetDoneQuizOfUser(userID string) (map[string]*DoneQuiz, error) {
 	return listD, nil
 }
 
+func DeleteDoneQuiz(DoneQuizID string) error {
+	_, err := client.Collection(DONE_QUIZ).Doc(DoneQuizID).Delete(ctx)
+	return err
+}

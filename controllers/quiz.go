@@ -217,6 +217,23 @@ func (u *QuizController) PostDoneQuiz() {
 	u.ServeJSON()
 }
 
+// @Title DeleteDoneQuiz
+// @Description create users
+// @Param	doneQuizID		path 	string	true		"done quiz id"
+// @Success 200 {string} success
+// @Failure 403 body is empty
+// @router /DeleteDoneQuiz/:doneQuizID [post]
+func (u *QuizController) DeleteDoneQuiz() {
+	quizID := u.Ctx.Input.Param(":doneQuizID")
+	err := models.DeleteDoneQuiz(quizID)
+	if err != nil {
+		u.Ctx.WriteString(err.Error())
+		return
+	}
+	u.Data["json"] = "success"
+	u.ServeJSON()
+}
+
 // @Title GetRecentPlayedQuiz
 // @Description get user by uid
 // @Param	id		path 	string	true		"The key for staticblock"
