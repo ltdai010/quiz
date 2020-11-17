@@ -180,6 +180,43 @@ func (u *QuizController) GetAllQuizInTopic() {
 	u.ServeJSON()
 }
 
+// @Title GetAllDoneQuizOfUser
+// @Description get user by uid
+// @Param	id		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.DoneQuiz
+// @Failure 403 :id is empty
+// @router /GetAllDoneQuizOfUser/:id [get]
+func (u *QuizController) GetAllDoneQuizOfUser() {
+	uid := u.GetString(":id")
+	if uid != "" {
+		quiz, err := models.GetDoneQuizOfUser(uid)
+		if err != nil {
+			u.Data["json"] = err.Error()
+		} else {
+			u.Data["json"] = quiz
+		}
+	}
+	u.ServeJSON()
+}
+
+// @Title PostDoneQuiz
+// @Description create users
+// @Param	body		body 	models.DoneQuiz	true		"body for user content"
+// @Success 200 {int} models.Quiz.Name
+// @Failure 403 body is empty
+// @router /PostDoneQuiz [post]
+func (u *QuizController) PostDoneQuiz() {
+	var quiz models.DoneQuiz
+	err := json.Unmarshal(u.Ctx.Input.RequestBody, &quiz)
+	if err != nil {
+		u.Ctx.WriteString(err.Error())
+		return
+	}
+	id := models.AddDoneQuiz(quiz)
+	u.Data["json"] = map[string]string{"ID": id}
+	u.ServeJSON()
+}
+
 // @Title GetRecentPlayedQuiz
 // @Description get user by uid
 // @Param	id		path 	string	true		"The key for staticblock"

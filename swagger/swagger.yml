@@ -203,6 +203,25 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/models.Quiz'
+  /quiz/GetAllDoneQuizOfUser/{id}:
+    get:
+      tags:
+      - quiz
+      description: get user by uid
+      operationId: QuizController.GetAllDoneQuizOfUser
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DoneQuiz'
+        "403":
+          description: :id is empty
   /quiz/GetAllImageLink/{quizid}:
     get:
       tags:
@@ -298,6 +317,24 @@ paths:
             $ref: '#/definitions/models.Quiz'
         "403":
           description: :id is empty
+  /quiz/PostDoneQuiz:
+    post:
+      tags:
+      - quiz
+      description: create users
+      operationId: QuizController.PostDoneQuiz
+      parameters:
+      - in: body
+        name: body
+        description: body for user content
+        required: true
+        schema:
+          $ref: '#/definitions/models.DoneQuiz'
+      responses:
+        "200":
+          description: '{int} models.Quiz.Name'
+        "403":
+          description: body is empty
   /quiz/PostImage:
     post:
       tags:
@@ -737,6 +774,20 @@ paths:
         "403":
           description: :hostId is empty
 definitions:
+  models.DoneQuiz:
+    title: DoneQuiz
+    type: object
+    properties:
+      QuizID:
+        type: string
+      RightAns:
+        type: integer
+        format: int64
+      UserID:
+        type: string
+      WrongAns:
+        type: integer
+        format: int64
   models.Host:
     title: Host
     type: object
@@ -794,8 +845,6 @@ definitions:
         items:
           type: integer
           format: int64
-      QuizDone:
-        type: boolean
       QuizID:
         type: string
       UserID:

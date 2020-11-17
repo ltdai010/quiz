@@ -7,9 +7,8 @@ import (
 const SAVE_GAME = "saveGame"
 
 type SaveGame struct {
-	UserID    string
-	QuizID    string
-	QuizDone  bool
+	UserID    		   string
+	QuizID    		   string
 	ListAnsweredQuest  []int
 }
 
