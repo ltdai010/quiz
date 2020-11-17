@@ -22,7 +22,7 @@ func AddDoneQuiz(d DoneQuiz) string {
 }
 
 func GetDoneQuizOfUser(userID string) (map[string]*DoneQuiz, error) {
-	list := client.Collection(DONE_QUIZ).Where("UserId", "==", userID).Documents(ctx)
+	list := client.Collection(DONE_QUIZ).Where("UserID", "==", userID).Documents(ctx)
 	listD := map[string]*DoneQuiz{}
 	for {
 		var d DoneQuiz

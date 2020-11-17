@@ -20,17 +20,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ebc42cfe-e6c2-487d-a1c3-987d0bc0e18b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/models/done_quiz.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/quiz.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/quiz.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lastupdate.tmp" beforeDir="false" afterPath="$PROJECT_DIR$/lastupdate.tmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/save_game.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/save_game.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routers/commentsRouter_controllers.go" beforeDir="false" afterPath="$PROJECT_DIR$/routers/commentsRouter_controllers.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/swagger/swagger.json" beforeDir="false" afterPath="$PROJECT_DIR$/swagger/swagger.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/swagger/swagger.yml" beforeDir="false" afterPath="$PROJECT_DIR$/swagger/swagger.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/websocket/models/answer_model.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/websocket/models/join_models.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/websocket/websocket.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/done_quiz.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/done_quiz.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
