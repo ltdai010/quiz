@@ -73,10 +73,12 @@ func (u *QuizController) UpdateQuestion() {
 
 // @Title GetAll
 // @Description get all Users
+// @Param	userID		query 	string	true		"The userID"
 // @Success 200 {object} models.Quiz
 // @router /GetAll [get]
 func (u *QuizController) GetAll() {
-	users := models.GetAllQuiz()
+	userID := u.GetString("userID")
+	users := models.GetAllQuiz(userID)
 	u.Data["json"] = users
 	u.ServeJSON()
 }
@@ -145,13 +147,15 @@ func (u *QuizController) PostImage() {
 // @Title Get
 // @Description get user by uid
 // @Param	id		path 	string	true		"The key for staticblock"
+// @Param	userID		query 	string	true		"The userID"
 // @Success 200 {object} models.Quiz
 // @Failure 403 :id is empty
 // @router /GetAQuiz/:id [get]
 func (u *QuizController) Get() {
+	userID := u.GetString("userID")
 	uid := u.GetString(":id")
 	if uid != "" {
-		user, err := models.GetQuiz(uid)
+		user, err := models.GetQuiz(userID, uid)
 		if err != nil {
 			u.Data["json"] = err.Error()
 		} else {
@@ -164,13 +168,15 @@ func (u *QuizController) Get() {
 // @Title GetAllQuizInTopic
 // @Description get user by uid
 // @Param	id		path 	string	true		"The key for staticblock"
+// @Param	userID	query	string	true		"The userID"
 // @Success 200 {object} models.Quiz
 // @Failure 403 :id is empty
-// @router /GetAllQuizInTopic/:id [get]
+// @router /GetAllQuizInTopic/:topicID [get]
 func (u *QuizController) GetAllQuizInTopic() {
-	uid := u.GetString(":id")
-	if uid != "" {
-		quiz, err := models.GetALlQuizInTopic(uid)
+	userID := u.GetString("userID")
+	topicID := u.GetString(":topicID")
+	if topicID != "" {
+		quiz, err := models.GetALlQuizInTopic(userID, topicID)
 		if err != nil {
 			u.Data["json"] = err.Error()
 		} else {
@@ -275,13 +281,15 @@ func (u *QuizController) GetRecommendedQuiz() {
 // @Title Search
 // @Description get user by uid
 // @Param	key		query 	string	true		"The key for staticblock"
+// @Param	userID	query	string	true		"The userID"
 // @Success 200 {object} models.Quiz
 // @Failure 403 key is empty
 // @router /SearchQuiz [get]
 func (u *QuizController) Search() {
 	key := u.GetString("key")
+	userID := u.GetString("userID")
 	if key != "" {
-		quizzes, err := models.SearchForQuiz(key)
+		quizzes, err := models.SearchForQuiz(userID, key)
 		if err != nil {
 			u.Data["json"] = err
 		} else {

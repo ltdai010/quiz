@@ -136,7 +136,7 @@ func init() {
     beego.GlobalControllerRouter["quiz/controllers:QuizController"] = append(beego.GlobalControllerRouter["quiz/controllers:QuizController"],
         beego.ControllerComments{
             Method: "GetAllQuizInTopic",
-            Router: "/GetAllQuizInTopic/:id",
+            Router: "/GetAllQuizInTopic/:topicID",
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -254,6 +254,15 @@ func init() {
         beego.ControllerComments{
             Method: "Get",
             Router: "/GetSaveGame/:code",
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["quiz/controllers:SaveGameController"] = append(beego.GlobalControllerRouter["quiz/controllers:SaveGameController"],
+        beego.ControllerComments{
+            Method: "GetSaveGameByUserQuiz",
+            Router: "/GetSaveGameByUserQuiz/",
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,

@@ -48,11 +48,20 @@ func init() {
 	}
 }
 
+
 type Quiz struct {
 	Creator 		 string
 	Name 			 string
 	NumberOfQuestion int
 	Counter			 int
+}
+
+type ResQuiz struct {
+	Creator 		 string
+	Name 			 string
+	NumberOfQuestion int
+	Counter			 int
+	Playing			 bool
 }
 
 type Quiz_ struct {
@@ -107,7 +116,7 @@ func AddQuiz(q Quiz) string {
 	return s.ID
 }
 
-func GetRecentPlayedQuiz(userID string) (map[string]*Quiz, error) {
+func GetRecentPlayedQuiz(userID string) (map[string]*ResQuiz, error) {
 	doc, err := client.Collection(PRIORITY).Doc(userID).Get(ctx)
 	if err != nil {
 		return nil, err
@@ -117,23 +126,27 @@ func GetRecentPlayedQuiz(userID string) (map[string]*Quiz, error) {
 	if err != nil {
 		return nil, err
 	}
-	mapQuiz := make(map[string]*Quiz)
+	mapQuiz := make(map[string]*ResQuiz)
 	for _, v := range p.PlayedQuiz {
 		doc, err = client.Collection(QUIZ).Doc(v).Get(ctx)
 		if err != nil {
 			return nil, err
 		}
-		var q Quiz
+		var q ResQuiz
 		err = doc.DataTo(&q)
 		if err != nil {
 			return nil, err
+		}
+		q.Playing = false
+		if Playing(userID, v) {
+			q.Playing = true
 		}
 		mapQuiz[v] = &q
 	}
 	return mapQuiz, nil
 }
 
-func GetRecommendQuiz(userID string) (map[string]*Quiz, error) {
+func GetRecommendQuiz(userID string) (map[string]*ResQuiz, error) {
 	doc, err := client.Collection(PRIORITY).Doc(userID).Get(ctx)
 	if err != nil {
 		return nil, err
@@ -143,7 +156,7 @@ func GetRecommendQuiz(userID string) (map[string]*Quiz, error) {
 	if err != nil {
 		return nil, err
 	}
-	mapQuiz := make(map[string]*Quiz)
+	mapQuiz := make(map[string]*ResQuiz)
 	mapTopic := make(map[string]string)
 	for _, v := range p.PlayedQuiz {
 		query := client.Collection(topicQuiz).Where("QuizID", "==", v).Documents(ctx)
@@ -172,7 +185,7 @@ func GetRecommendQuiz(userID string) (map[string]*Quiz, error) {
 			if err != nil {
 				return nil, err
 			}
-			var tq Quiz
+			var tq ResQuiz
 			quizID, err := doc.DataAt("QuizID")
 			if err != nil {
 				return nil, err
@@ -181,13 +194,32 @@ func GetRecommendQuiz(userID string) (map[string]*Quiz, error) {
 			if err != nil {
 				return nil, err
 			}
+			tq.Playing = false
+			if Playing(userID, quizID.(string)) {
+				tq.Playing = true
+			}
 			err = docQuiz.DataTo(&tq)
+			if err != nil {
+				return nil, err
+			}
 			mapQuiz[quizID.(string)] = &tq
 		}
 	}
 	return mapQuiz, nil
 }
 
+func Playing(userID string, quizID string) bool {
+	mapSave, err := GetAllSaveGameByUser(userID)
+	if err != nil {
+		return false
+	}
+	for _, i := range mapSave {
+		if i.QuizID == quizID {
+			return true
+		}
+	}
+	return false
+}
 
 func StartQuiz(quizID string) error {
 	doc, err := client.Collection(QUIZ).Doc(quizID).Get(ctx)
@@ -311,10 +343,10 @@ func GetQuizInfo(ctx context.Context, ref *firestore.DocumentRef) (*firestore.Do
 	return doc, nil
 }
 
-func GetQuiz(name string) (u *Quiz, err error) {
+func GetQuiz(userID, name string) (u *ResQuiz, err error) {
 	ref := client.Collection(QUIZ).Doc(name)
 	if doc, err := GetQuizInfo(ctx, ref); err == nil {
-		var q Quiz
+		var q ResQuiz
 		name, err := doc.DataAt("Name")
 		if err != nil {
 			return nil, err
@@ -333,23 +365,34 @@ func GetQuiz(name string) (u *Quiz, err error) {
 		if err != nil {
 			return nil,err
 		}
+		q.Playing = false
+		if Playing(userID, fmt.Sprint(name)) {
+			q.Playing = true
+		}
 		return &q, nil
 	}
 	return nil, errors.New("QUIZ not exists")
 }
 
-func GetAllQuiz() map[string]*Quiz {
+func GetAllQuiz(userID string) map[string]*ResQuiz {
 	list := client.Collection(QUIZ).Documents(ctx)
-	quizzes := make(map[string]*Quiz)
+	quizzes := make(map[string]*ResQuiz)
 	for{
-		var q Quiz
+		var q ResQuiz
 		doc, err := list.Next()
 		if err == iterator.Done {
 			break
 		}
+		if err != nil {
+			return nil
+		}
 		err = doc.DataTo(&q)
 		if err != nil {
 			return nil
+		}
+		q.Playing = false
+		if Playing(userID, doc.Ref.ID) {
+			q.Playing = true
 		}
 		quizzes[doc.Ref.ID] = &q
 	}
@@ -426,22 +469,26 @@ func UpdateQuiz(name string, q *temp.QuizUpdate) (err error) {
 	return errors.New("quiz not exist")
 }
 
-func SearchForQuiz(key string) (map[string]*Quiz, error) {
+func SearchForQuiz(userID, key string) (map[string]*ResQuiz, error) {
 	res, err := index.Search(key)
 	if err != nil {
 		return nil, err
 	}
 	var qs []*Quiz_
-	quizzes := make(map[string]*Quiz)
+	quizzes := make(map[string]*ResQuiz)
 	err = res.UnmarshalHits(&qs)
 	if err != nil {
 		return nil, err
 	}
 	for _, q := range qs {
-		quiz := &Quiz{
+		quiz := &ResQuiz{
 			Creator:          q.Creator,
 			Name:             q.Name,
 			NumberOfQuestion: q.NumberOfQuestion,
+		}
+		quiz.Playing = false
+		if Playing(userID, q.ObjectID) {
+			quiz.Playing = true
 		}
 		quizzes[q.ObjectID] = quiz
 	}
@@ -458,9 +505,9 @@ func DeleteQuiz(name string) error {
 }
 
 
-func GetALlQuizInTopic(topicID string) (map[string]*Quiz, error) {
+func GetALlQuizInTopic(userID, topicID string) (map[string]*ResQuiz, error) {
 	iter := client.Collection(topicQuiz).Where("TopicID", "==", topicID).Documents(ctx)
-	mapq := make(map[string]*Quiz)
+	mapq := make(map[string]*ResQuiz)
 	for {
 		doc, err := iter.Next()
 		if err == iterator.Done {
@@ -478,10 +525,14 @@ func GetALlQuizInTopic(topicID string) (map[string]*Quiz, error) {
 		if err != nil {
 			return nil, err
 		}
-		var q Quiz
+		var q ResQuiz
 		err = quizDoc.DataTo(&q)
 		if err != nil {
 			return nil, err
+		}
+		q.Playing = false
+		if Playing(userID, tq.QuizID) {
+			q.Playing = true
 		}
 		mapq[tq.QuizID] = &q
 	}

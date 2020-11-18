@@ -15,6 +15,21 @@ type SaveGame struct {
 
 func AddSaveGame(saveGame SaveGame) string {
 	//check if already exist
+	list := client.Collection(SAVE_GAME).Where("UserID", "==", saveGame.UserID).Where("QuizID", "==", saveGame.QuizID).Documents(ctx)
+	for {
+		doc, err := list.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return err.Error()
+		}
+		_, err = client.Collection(SAVE_GAME).Doc(doc.Ref.ID).Delete(ctx)
+		if err != nil {
+			return err.Error()
+		}
+	}
+	//add save game
 	ref, _, err := client.Collection(SAVE_GAME).Add(ctx, saveGame)
 	if err != nil {
 		return err.Error()
@@ -31,6 +46,20 @@ func GetSaveGame(id string) (*SaveGame, error) {
 	sg := &SaveGame{}
 	err = doc.DataTo(sg)
 	return sg, err
+}
+
+func GetSaveGameByUserQuiz(userID, quizID string) (SaveGame, error) {
+	list := client.Collection(SAVE_GAME).Where("UserID", "==", userID).Where("QuizID", "==", quizID).Documents(ctx)
+	doc, err := list.Next()
+	if err == iterator.Done {
+		return SaveGame{}, err
+	}
+	if err != nil {
+		return SaveGame{}, err
+	}
+	saveGame := SaveGame{}
+	err = doc.DataTo(&saveGame)
+	return saveGame, err
 }
 
 func DeleteSaveGame(id string) error {

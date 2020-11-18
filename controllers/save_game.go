@@ -44,6 +44,25 @@ func (o *SaveGameController) Get() {
 	o.ServeJSON()
 }
 
+// @Title GetSaveGameByUserQuiz
+// @Description find savegame
+// @Param	userID		query 	string	true		"the user you want to get"
+// @Param	quizID		query 	string	true		"the quiz you want to get"
+// @Success 200 {object} models.SaveGame
+// @Failure 403 :bad request
+// @router /GetSaveGameByUserQuiz/ [get]
+func (o *SaveGameController) GetSaveGameByUserQuiz() {
+	userID := o.GetString("userID")
+	quizID := o.GetString("quizID")
+	ob, err := models.GetSaveGameByUserQuiz(userID, quizID)
+	if err != nil {
+		o.Data["json"] = err.Error()
+	} else {
+		o.Data["json"] = ob
+	}
+	o.ServeJSON()
+}
+
 // @Title GetAllOfUser
 // @Description get all objects
 // @Param	userID	path	string	true	"The userID"

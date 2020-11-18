@@ -300,6 +300,13 @@
                         "description": "The key for staticblock",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "userID",
+                        "description": "The userID",
+                        "required": true,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -322,6 +329,15 @@
                 ],
                 "description": "get all Users",
                 "operationId": "QuizController.GetAll",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "userID",
+                        "description": "The userID",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -419,7 +435,7 @@
                 }
             }
         },
-        "/quiz/GetAllQuizInTopic/{id}": {
+        "/quiz/GetAllQuizInTopic/{topicID}": {
             "get": {
                 "tags": [
                     "quiz"
@@ -431,6 +447,13 @@
                         "in": "path",
                         "name": "id",
                         "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "userID",
+                        "description": "The userID",
                         "required": true,
                         "type": "string"
                     }
@@ -644,6 +667,13 @@
                         "description": "The key for staticblock",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "userID",
+                        "description": "The userID",
+                        "required": true,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -832,6 +862,42 @@
                     },
                     "403": {
                         "description": ":code is empty"
+                    }
+                }
+            }
+        },
+        "/save-game/GetSaveGameByUserQuiz/": {
+            "get": {
+                "tags": [
+                    "save-game"
+                ],
+                "description": "find savegame",
+                "operationId": "SaveGameController.GetSaveGameByUserQuiz",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "userID",
+                        "description": "the user you want to get",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "quizID",
+                        "description": "the quiz you want to get",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.SaveGame"
+                        }
+                    },
+                    "403": {
+                        "description": ":bad request"
                     }
                 }
             }

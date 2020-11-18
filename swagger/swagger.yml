@@ -202,6 +202,11 @@ paths:
         description: The key for staticblock
         required: true
         type: string
+      - in: query
+        name: userID
+        description: The userID
+        required: true
+        type: string
       responses:
         "200":
           description: ""
@@ -215,6 +220,12 @@ paths:
       - quiz
       description: get all Users
       operationId: QuizController.GetAll
+      parameters:
+      - in: query
+        name: userID
+        description: The userID
+        required: true
+        type: string
       responses:
         "200":
           description: ""
@@ -277,7 +288,7 @@ paths:
             $ref: '#/definitions/models.Question'
         "403":
           description: :quizid is not exist
-  /quiz/GetAllQuizInTopic/{id}:
+  /quiz/GetAllQuizInTopic/{topicID}:
     get:
       tags:
       - quiz
@@ -287,6 +298,11 @@ paths:
       - in: path
         name: id
         description: The key for staticblock
+        required: true
+        type: string
+      - in: query
+        name: userID
+        description: The userID
         required: true
         type: string
       responses:
@@ -427,6 +443,11 @@ paths:
         description: The key for staticblock
         required: true
         type: string
+      - in: query
+        name: userID
+        description: The userID
+        required: true
+        type: string
       responses:
         "200":
           description: ""
@@ -550,6 +571,30 @@ paths:
           description: '{code} models.SaveGame'
         "403":
           description: :code is empty
+  /save-game/GetSaveGameByUserQuiz/:
+    get:
+      tags:
+      - save-game
+      description: find savegame
+      operationId: SaveGameController.GetSaveGameByUserQuiz
+      parameters:
+      - in: query
+        name: userID
+        description: the user you want to get
+        required: true
+        type: string
+      - in: query
+        name: quizID
+        description: the quiz you want to get
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.SaveGame'
+        "403":
+          description: :bad request
   /save-game/PostSaveGame:
     post:
       tags:
