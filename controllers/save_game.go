@@ -81,15 +81,15 @@ func (o *SaveGameController) DeleteSaveGame() {
 // @Title UpdateSaveGame
 // @Description update the object
 // @Param	savegameID		path 	string			true		"The host you want to update"
-// @Param	body			body 	models.SaveGame	true		"The body"
+// @Param	body			body 	[]int	true		"The body"
 // @Success 200 {string} success
 // @Failure 403 :savegameID is empty
 // @router /UpdateSaveGame/:savegameID [put]
 func (o *SaveGameController) UpdateSaveGame() {
 	objectId := o.Ctx.Input.Param(":savegameID")
-	var ob models.SaveGame
-	json.Unmarshal(o.Ctx.Input.RequestBody, &ob)
-	err := models.UpdateSaveGame(objectId, ob)
+	var list []int
+	json.Unmarshal(o.Ctx.Input.RequestBody, &list)
+	err := models.UpdateSaveGame(objectId, list)
 	if err != nil {
 		o.Data["json"] = err.Error()
 	} else {

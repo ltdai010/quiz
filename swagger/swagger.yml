@@ -585,7 +585,10 @@ paths:
         description: The body
         required: true
         schema:
-          $ref: '#/definitions/models.SaveGame'
+          type: array
+          items:
+            format: int64
+            type: integer
       responses:
         "200":
           description: '{string} success'

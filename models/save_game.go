@@ -1,6 +1,7 @@
 package models
 
 import (
+	"cloud.google.com/go/firestore"
 	"google.golang.org/api/iterator"
 )
 
@@ -58,7 +59,9 @@ func GetAllSaveGameByUser(userID string) (map[string]*SaveGame, error) {
 	return mapS, nil
 }
 
-func UpdateSaveGame(id string, saveGame SaveGame) error {
-	_, err := client.Collection(SAVE_GAME).Doc(id).Set(ctx, saveGame)
+func UpdateSaveGame(id string, list []int) error {
+	_, err := client.Collection(SAVE_GAME).Doc(id).Set(ctx, map[string]interface{}{
+		"ListAnsweredQuest" : list,
+	}, firestore.MergeAll)
 	return err
 }
