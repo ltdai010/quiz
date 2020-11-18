@@ -234,6 +234,32 @@
                 }
             }
         },
+        "/quiz/DeleteDoneQuiz/{doneQuizID}": {
+            "post": {
+                "tags": [
+                    "quiz"
+                ],
+                "description": "create users",
+                "operationId": "QuizController.DeleteDoneQuiz",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "doneQuizID",
+                        "description": "done quiz id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} success"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/quiz/DeleteQuiz/{qId}": {
             "delete": {
                 "tags": [
@@ -838,6 +864,41 @@
                 }
             }
         },
+        "/save-game/UpdateSaveGame/{savegameID}": {
+            "put": {
+                "tags": [
+                    "save-game"
+                ],
+                "description": "update the object",
+                "operationId": "SaveGameController.UpdateSaveGame",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "savegameID",
+                        "description": "The host you want to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SaveGame"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} success"
+                    },
+                    "403": {
+                        "description": ":savegameID is empty"
+                    }
+                }
+            }
+        },
         "/topic/GetAll": {
             "get": {
                 "tags": [
@@ -1098,44 +1159,6 @@
                     },
                     "403": {
                         "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/user/UpdateSaveGame/{savegame-id}": {
-            "put": {
-                "tags": [
-                    "user"
-                ],
-                "description": "update the object",
-                "operationId": "UserController.UpdateSaveGame",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "savegame-id",
-                        "description": "The host you want to update",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "The body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.SaveGame"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.Host"
-                        }
-                    },
-                    "403": {
-                        "description": ":savegame-id is empty"
                     }
                 }
             }

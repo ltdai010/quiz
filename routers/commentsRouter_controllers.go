@@ -72,6 +72,15 @@ func init() {
 
     beego.GlobalControllerRouter["quiz/controllers:QuizController"] = append(beego.GlobalControllerRouter["quiz/controllers:QuizController"],
         beego.ControllerComments{
+            Method: "DeleteDoneQuiz",
+            Router: "/DeleteDoneQuiz/:doneQuizID",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["quiz/controllers:QuizController"] = append(beego.GlobalControllerRouter["quiz/controllers:QuizController"],
+        beego.ControllerComments{
             Method: "Delete",
             Router: "/DeleteQuiz/:qId",
             AllowHTTPMethods: []string{"delete"},
@@ -259,6 +268,15 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["quiz/controllers:SaveGameController"] = append(beego.GlobalControllerRouter["quiz/controllers:SaveGameController"],
+        beego.ControllerComments{
+            Method: "UpdateSaveGame",
+            Router: "/UpdateSaveGame/:savegameID",
+            AllowHTTPMethods: []string{"put"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["quiz/controllers:TopicController"] = append(beego.GlobalControllerRouter["quiz/controllers:TopicController"],
         beego.ControllerComments{
             Method: "GetAllTopic",
@@ -345,15 +363,6 @@ func init() {
             Method: "PostUser",
             Router: "/PostUser",
             AllowHTTPMethods: []string{"post"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["quiz/controllers:UserController"] = append(beego.GlobalControllerRouter["quiz/controllers:UserController"],
-        beego.ControllerComments{
-            Method: "UpdateSaveGame",
-            Router: "/UpdateSaveGame/:savegame-id",
-            AllowHTTPMethods: []string{"put"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
