@@ -456,29 +456,6 @@ paths:
           description: '{string} update done!'
         "403":
           description: :uid is not int
-  /quiz/UpdateQuestion/{name}:
-    put:
-      tags:
-      - quiz
-      description: post questions
-      operationId: QuizController.UpdateQuestion
-      parameters:
-      - in: path
-        name: name
-        description: name quiz
-        required: true
-        type: string
-      - in: body
-        name: body
-        description: body for user content
-        required: true
-        schema:
-          $ref: '#/definitions/temp.mapQuestion'
-      responses:
-        "200":
-          description: '{string} models.Question.QuizName'
-        "403":
-          description: body is empty
   /quiz/UpdateQuiz/{uid}:
     put:
       tags:

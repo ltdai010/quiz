@@ -51,26 +51,6 @@ func (u *QuizController) PostQuestions() {
 	u.ServeJSON()
 }
 
-// @Title UpdateQuestion
-// @Description post questions
-// @Param	name		path	string				true		"name quiz"
-// @Param	body		body	temp.mapQuestion	true		"body for user content"
-// @Success 200 {string} models.Question.QuizName
-// @Failure 403 body is empty
-// @router /UpdateQuestion/:name [put]
-func (u *QuizController) UpdateQuestion() {
-	id := u.Ctx.Input.Param(":name")
-	var qt map[string]models.Question
-	err := json.Unmarshal(u.Ctx.Input.RequestBody, &qt)
-	if err != nil {
-		u.Ctx.WriteString(err.Error())
-		return
-	}
-	qname := models.UpdateQuestion(id, qt)
-	u.Data["json"] = map[string]string{"quizName": qname}
-	u.ServeJSON()
-}
-
 // @Title GetAll
 // @Description get all Users
 // @Success 200 {object} models.Quiz
@@ -214,8 +194,12 @@ func (u *QuizController) PostDoneQuiz() {
 		u.Ctx.WriteString(err.Error())
 		return
 	}
-	id := models.AddDoneQuiz(quiz)
-	u.Data["json"] = map[string]string{"ID": id}
+	err = models.AddDoneQuiz(quiz)
+	if err != nil {
+		u.Ctx.WriteString(err.Error())
+		return
+	}
+	u.Data["json"] = "success"
 	u.ServeJSON()
 }
 

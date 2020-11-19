@@ -91,7 +91,7 @@ type Question struct {
 func AddQuiz(q Quiz) string {
 	s, _, err := client.Collection(QUIZ).Add(ctx, map[string]interface{}{
 		"Name":             q.Name,
-		"NumberOfQuestion": q.NumberOfQuestion,
+		"NumberOfQuestion": 0,
 		"Question": map[string]interface{}{
 		},
 		"Counter": 0,
@@ -102,7 +102,7 @@ func AddQuiz(q Quiz) string {
 	q_ := Quiz_{
 		ObjectID: s.ID,
 		Name: q.Name,
-		NumberOfQuestion: q.NumberOfQuestion,
+		NumberOfQuestion: 0,
 	}
 	_, err = index.SaveObject(q_)
 	if err != nil {
@@ -236,56 +236,6 @@ func StartQuiz(quizID string) error {
 	return err
 }
 
-func UpdateQuestion(name string, questions map[string]Question) string {
-	doc, err := client.Collection(QUIZ).Doc(name).Get(ctx)
-	if err != nil {
-		return "QUIZ not found"
-	}
-	list, err := doc.DataAt("Question")
-	if err != nil {
-		return err.Error()
-	}
-	creator, err := doc.DataAt("Creator")
-	if err != nil {
-		return err.Error()
-	}
-	number, err := doc.DataAt("NumberOfQuestion")
-	if err != nil {
-		return err.Error()
-	}
-	v := reflect.ValueOf(list)
-	if v.Kind() != reflect.Map {
-		return "wrong type"
-	}
-	_, err = client.Collection(QUIZ).Doc(name).Set(ctx, map[string]interface{}{
-		"Creator":			creator,
-		"Name"	:			name,
-		"NumberOfQuestion":	number,
-		"Question": map[string]interface{}{},
-	})
-	for i, v := range questions {
-		_, err := client.Collection(QUIZ).Doc(name).Set(ctx, map[string]interface{}{
-			"Creator":			creator,
-			"Name"	:			name,
-			"NumberOfQuestion":	number,
-			"Question": map[string]interface{}{
-				i: map[string]interface{}{
-					"Question": v.Question,
-					"Choice1" : v.Choice1,
-					"Choice2" : v.Choice2,
-					"Choice3" : v.Choice3,
-					"Choice4" : v.Choice4,
-					"Answer"  : v.Answer,
-				},
-			},
-		}, firestore.MergeAll)
-		if err != nil {
-			log.Printf("Failed adding alovelace: %v \n", err)
-		}
-	}
-	return "done"
-}
-
 func AddQuestions(name string, questions map[string]Question) string {
 	doc, err := client.Collection(QUIZ).Doc(name).Get(ctx)
 	if err != nil {
@@ -299,6 +249,9 @@ func AddQuestions(name string, questions map[string]Question) string {
 	if v.Kind() != reflect.Map {
 		return "wrong type"
 	}
+	_, err = client.Collection(QUIZ).Doc(name).Set(ctx, map[string]interface{}{
+		"NumberOfQuestion" : len(questions),
+	}, firestore.MergeAll)
 	for i, v := range questions {
 		_, err := client.Collection(QUIZ).Doc(name).Set(ctx, map[string]interface{}{
 			"Question": map[string]interface{}{

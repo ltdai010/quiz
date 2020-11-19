@@ -13,12 +13,9 @@ type DoneQuiz struct {
 
 const DONE_QUIZ = "doneQuiz"
 
-func AddDoneQuiz(d DoneQuiz) string {
-	ref, _, err := client.Collection(DONE_QUIZ).Add(ctx, d)
-	if err != nil {
-		return err.Error()
-	}
-	return ref.ID
+func AddDoneQuiz(d DoneQuiz) error {
+	_, err := client.Collection(DONE_QUIZ).Doc(d.QuizID + "-" + d.UserID).Set(ctx, d)
+	return err
 }
 
 func GetDoneQuizOfUser(userID string) (map[string]*DoneQuiz, error) {
@@ -42,7 +39,7 @@ func GetDoneQuizOfUser(userID string) (map[string]*DoneQuiz, error) {
 	return listD, nil
 }
 
-func DeleteDoneQuiz(DoneQuizID string) error {
-	_, err := client.Collection(DONE_QUIZ).Doc(DoneQuizID).Delete(ctx)
+func DeleteDoneQuiz(QuizID string) error {
+	_, err := client.Collection(DONE_QUIZ).Doc(QuizID).Delete(ctx)
 	return err
 }
