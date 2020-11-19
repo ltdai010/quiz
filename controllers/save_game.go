@@ -21,7 +21,9 @@ type SaveGameController struct {
 func (o *SaveGameController) Post() {
 	var ob models.SaveGame
 	err := json.Unmarshal(o.Ctx.Input.RequestBody, &ob)
-	log.Println(err)
+	if err != nil {
+		return
+	}
 	id := models.AddSaveGame(ob)
 	o.Data["json"] = map[string]string{"Id": id}
 	o.ServeJSON()
@@ -107,8 +109,12 @@ func (o *SaveGameController) DeleteSaveGame() {
 func (o *SaveGameController) UpdateSaveGame() {
 	objectId := o.Ctx.Input.Param(":savegameID")
 	var list []int
-	json.Unmarshal(o.Ctx.Input.RequestBody, &list)
-	err := models.UpdateSaveGame(objectId, list)
+	err := json.Unmarshal(o.Ctx.Input.RequestBody, &list)
+	if err != nil {
+		log.Println("err", err)
+		return
+	}
+	err = models.UpdateSaveGame(objectId, list)
 	if err != nil {
 		o.Data["json"] = err.Error()
 	} else {

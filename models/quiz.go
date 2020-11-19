@@ -50,14 +50,12 @@ func init() {
 
 
 type Quiz struct {
-	Creator 		 string
 	Name 			 string
 	NumberOfQuestion int
 	Counter			 int
 }
 
 type ResQuiz struct {
-	Creator 		 string
 	Name 			 string
 	NumberOfQuestion int
 	Counter			 int
@@ -67,7 +65,6 @@ type ResQuiz struct {
 type Quiz_ struct {
 	ObjectID string `json:"objectID"`
 	ID 		 string
-	Creator string
 	Name string
 	NumberOfQuestion int
 }
@@ -95,7 +92,6 @@ func AddQuiz(q Quiz) string {
 	s, _, err := client.Collection(QUIZ).Add(ctx, map[string]interface{}{
 		"Name":             q.Name,
 		"NumberOfQuestion": q.NumberOfQuestion,
-		"Creator":          q.Creator,
 		"Question": map[string]interface{}{
 		},
 		"Counter": 0,
@@ -107,7 +103,6 @@ func AddQuiz(q Quiz) string {
 		ObjectID: s.ID,
 		Name: q.Name,
 		NumberOfQuestion: q.NumberOfQuestion,
-		Creator: q.Creator,
 	}
 	_, err = index.SaveObject(q_)
 	if err != nil {
@@ -343,15 +338,11 @@ func GetQuizInfo(ctx context.Context, ref *firestore.DocumentRef) (*firestore.Do
 	return doc, nil
 }
 
-func GetQuiz(userID, name string) (u *ResQuiz, err error) {
+func GetQuiz(name string) (u *Quiz, err error) {
 	ref := client.Collection(QUIZ).Doc(name)
 	if doc, err := GetQuizInfo(ctx, ref); err == nil {
-		var q ResQuiz
+		var q Quiz
 		name, err := doc.DataAt("Name")
-		if err != nil {
-			return nil, err
-		}
-		creator, err := doc.DataAt("Creator")
 		if err != nil {
 			return nil, err
 		}
@@ -360,25 +351,20 @@ func GetQuiz(userID, name string) (u *ResQuiz, err error) {
 			return nil, err
 		}
 		q.Name = fmt.Sprint(name)
-		q.Creator = fmt.Sprint(creator)
 		q.NumberOfQuestion, err = strconv.Atoi(fmt.Sprint(numberOfQuestion))
 		if err != nil {
 			return nil,err
-		}
-		q.Playing = false
-		if Playing(userID, fmt.Sprint(name)) {
-			q.Playing = true
 		}
 		return &q, nil
 	}
 	return nil, errors.New("QUIZ not exists")
 }
 
-func GetAllQuiz(userID string) map[string]*ResQuiz {
+func GetAllQuiz() map[string]*Quiz {
 	list := client.Collection(QUIZ).Documents(ctx)
-	quizzes := make(map[string]*ResQuiz)
+	quizzes := make(map[string]*Quiz)
 	for{
-		var q ResQuiz
+		var q Quiz
 		doc, err := list.Next()
 		if err == iterator.Done {
 			break
@@ -389,10 +375,6 @@ func GetAllQuiz(userID string) map[string]*ResQuiz {
 		err = doc.DataTo(&q)
 		if err != nil {
 			return nil
-		}
-		q.Playing = false
-		if Playing(userID, doc.Ref.ID) {
-			q.Playing = true
 		}
 		quizzes[doc.Ref.ID] = &q
 	}
@@ -469,26 +451,21 @@ func UpdateQuiz(name string, q *temp.QuizUpdate) (err error) {
 	return errors.New("quiz not exist")
 }
 
-func SearchForQuiz(userID, key string) (map[string]*ResQuiz, error) {
+func SearchForQuiz(key string) (map[string]*Quiz, error) {
 	res, err := index.Search(key)
 	if err != nil {
 		return nil, err
 	}
 	var qs []*Quiz_
-	quizzes := make(map[string]*ResQuiz)
+	quizzes := make(map[string]*Quiz)
 	err = res.UnmarshalHits(&qs)
 	if err != nil {
 		return nil, err
 	}
 	for _, q := range qs {
-		quiz := &ResQuiz{
-			Creator:          q.Creator,
+		quiz := &Quiz{
 			Name:             q.Name,
 			NumberOfQuestion: q.NumberOfQuestion,
-		}
-		quiz.Playing = false
-		if Playing(userID, q.ObjectID) {
-			quiz.Playing = true
 		}
 		quizzes[q.ObjectID] = quiz
 	}

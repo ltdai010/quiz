@@ -202,11 +202,6 @@ paths:
         description: The key for staticblock
         required: true
         type: string
-      - in: query
-        name: userID
-        description: The userID
-        required: true
-        type: string
       responses:
         "200":
           description: ""
@@ -220,12 +215,6 @@ paths:
       - quiz
       description: get all Users
       operationId: QuizController.GetAll
-      parameters:
-      - in: query
-        name: userID
-        description: The userID
-        required: true
-        type: string
       responses:
         "200":
           description: ""
@@ -296,13 +285,13 @@ paths:
       operationId: QuizController.GetAllQuizInTopic
       parameters:
       - in: path
-        name: id
+        name: topicID
         description: The key for staticblock
         required: true
         type: string
       - in: query
         name: userID
-        description: The userID
+        description: user ID
         required: true
         type: string
       responses:
@@ -441,11 +430,6 @@ paths:
       - in: query
         name: key
         description: The key for staticblock
-        required: true
-        type: string
-      - in: query
-        name: userID
-        description: The userID
         required: true
         type: string
       responses:
@@ -892,8 +876,6 @@ definitions:
       Counter:
         type: integer
         format: int64
-      Creator:
-        type: string
       Name:
         type: string
       NumberOfQuestion:

@@ -25,8 +25,7 @@
       <change beforePath="$PROJECT_DIR$/controllers/save_game.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/save_game.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lastupdate.tmp" beforeDir="false" afterPath="$PROJECT_DIR$/lastupdate.tmp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/quiz.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/quiz.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/save_game.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/save_game.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routers/commentsRouter_controllers.go" beforeDir="false" afterPath="$PROJECT_DIR$/routers/commentsRouter_controllers.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quiz" beforeDir="false" afterPath="$PROJECT_DIR$/quiz" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/swagger/swagger.json" beforeDir="false" afterPath="$PROJECT_DIR$/swagger/swagger.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/swagger/swagger.yml" beforeDir="false" afterPath="$PROJECT_DIR$/swagger/swagger.yml" afterDir="false" />
     </list>
