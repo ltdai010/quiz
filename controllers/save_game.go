@@ -39,7 +39,7 @@ func (o *SaveGameController) Get() {
 	objectId := o.Ctx.Input.Param(":code")
 	ob, err := models.GetSaveGame(objectId)
 	if err != nil {
-		o.Data["json"] = err.Error()
+		o.Data["json"] = models.SaveGame{}
 	} else {
 		o.Data["json"] = ob
 	}
@@ -58,7 +58,7 @@ func (o *SaveGameController) GetSaveGameByUserQuiz() {
 	quizID := o.GetString("quizID")
 	ob, err := models.GetSaveGameByUserQuiz(userID, quizID)
 	if err != nil {
-		o.Data["json"] = err.Error()
+		o.Data["json"] = models.SaveGame{}
 	} else {
 		o.Data["json"] = ob
 	}
@@ -75,10 +75,10 @@ func (o *SaveGameController) GetAllOfUser() {
 	id := o.Ctx.Input.Param(":userID")
 	obs, err := models.GetAllSaveGameByUser(id)
 	if err != nil {
-		o.Ctx.WriteString(err.Error())
-		return
+		o.Data["json"] = map[string]*models.SaveGame{}
+	} else {
+		o.Data["json"] = obs
 	}
-	o.Data["json"] = obs
 	o.ServeJSON()
 }
 
