@@ -453,7 +453,7 @@ func GetALlQuizInTopic(userID, topicID string) (map[string]*ResQuiz, error) {
 		}
 		quizDoc, err := client.Collection(QUIZ).Doc(tq.QuizID).Get(ctx)
 		if err != nil {
-			return nil, err
+			continue
 		}
 		var q ResQuiz
 		err = quizDoc.DataTo(&q)
