@@ -157,7 +157,7 @@ paths:
         "403":
           description: :hostId is empty
   /quiz/DeleteDoneQuiz/{doneQuizID}:
-    post:
+    delete:
       tags:
       - quiz
       description: create users
@@ -432,11 +432,16 @@ paths:
         description: The key for staticblock
         required: true
         type: string
+      - in: query
+        name: userID
+        description: The userID
+        required: true
+        type: string
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.Quiz'
+            $ref: '#/definitions/models.ResQuiz'
         "403":
           description: key is empty
   /quiz/StartQuiz/{uid}:
@@ -858,6 +863,20 @@ definitions:
       NumberOfQuestion:
         type: integer
         format: int64
+  models.ResQuiz:
+    title: ResQuiz
+    type: object
+    properties:
+      Counter:
+        type: integer
+        format: int64
+      Name:
+        type: string
+      NumberOfQuestion:
+        type: integer
+        format: int64
+      Playing:
+        type: boolean
   models.SaveGame:
     title: SaveGame
     type: object

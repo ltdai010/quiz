@@ -74,7 +74,7 @@ func init() {
         beego.ControllerComments{
             Method: "DeleteDoneQuiz",
             Router: "/DeleteDoneQuiz/:doneQuizID",
-            AllowHTTPMethods: []string{"post"},
+            AllowHTTPMethods: []string{"delete"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})

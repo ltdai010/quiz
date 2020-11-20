@@ -72,7 +72,7 @@ func (u *QuizController) GetAllQuest() {
 	if name != "" {
 		users, err := models.GetAllQuestion(name)
 		if err != nil {
-			u.Data["json"] = err
+			u.Data["json"] = map[string]*temp.QuestionUpdate{}
 		} else {
 			u.Data["json"] = users
 		}
@@ -133,7 +133,7 @@ func (u *QuizController) Get() {
 	if uid != "" {
 		user, err := models.GetQuiz(uid)
 		if err != nil {
-			u.Data["json"] = err.Error()
+			u.Data["json"] = models.Quiz{}
 		} else {
 			u.Data["json"] = user
 		}
@@ -154,7 +154,7 @@ func (u *QuizController) GetAllQuizInTopic() {
 	if topicID != "" {
 		quiz, err := models.GetALlQuizInTopic(userID, topicID)
 		if err != nil {
-			u.Data["json"] = err.Error()
+			u.Data["json"] = map[string]*models.ResQuiz{}
 		} else {
 			u.Data["json"] = quiz
 		}
@@ -173,7 +173,7 @@ func (u *QuizController) GetAllDoneQuizOfUser() {
 	if uid != "" {
 		quiz, err := models.GetDoneQuizOfUser(uid)
 		if err != nil {
-			u.Data["json"] = err.Error()
+			u.Data["json"] = map[string]*models.DoneQuiz{}
 		} else {
 			u.Data["json"] = quiz
 		}
@@ -208,7 +208,7 @@ func (u *QuizController) PostDoneQuiz() {
 // @Param	doneQuizID		path 	string	true		"done quiz id"
 // @Success 200 {string} success
 // @Failure 403 body is empty
-// @router /DeleteDoneQuiz/:doneQuizID [post]
+// @router /DeleteDoneQuiz/:doneQuizID [delete]
 func (u *QuizController) DeleteDoneQuiz() {
 	quizID := u.Ctx.Input.Param(":doneQuizID")
 	err := models.DeleteDoneQuiz(quizID)
@@ -231,7 +231,7 @@ func (u *QuizController) GetRecentPlayedQuiz() {
 	if uid != "" {
 		quizs, err := models.GetRecentPlayedQuiz(uid)
 		if err != nil {
-			u.Data["json"] = err.Error()
+			u.Data["json"] = map[string]*models.ResQuiz{}
 		} else {
 			u.Data["json"] = quizs
 		}
@@ -250,7 +250,7 @@ func (u *QuizController) GetRecommendedQuiz() {
 	if uid != "" {
 		quizs, err := models.GetRecommendQuiz(uid)
 		if err != nil {
-			u.Data["json"] = err.Error()
+			u.Data["json"] = map[string]*models.ResQuiz{}
 		} else {
 			u.Data["json"] = quizs
 		}
@@ -261,15 +261,17 @@ func (u *QuizController) GetRecommendedQuiz() {
 // @Title Search
 // @Description get user by uid
 // @Param	key		query 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Quiz
+// @Param   userID	query	string	true		"The userID"
+// @Success 200 {object} models.ResQuiz
 // @Failure 403 key is empty
 // @router /SearchQuiz [get]
 func (u *QuizController) Search() {
 	key := u.GetString("key")
+	userID := u.GetString("userID")
 	if key != "" {
-		quizzes, err := models.SearchForQuiz(key)
+		quizzes, err := models.SearchForQuiz(userID, key)
 		if err != nil {
-			u.Data["json"] = err
+			u.Data["json"] = map[string]*models.ResQuiz{}
 		} else {
 			u.Data["json"] = quizzes
 		}

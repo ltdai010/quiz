@@ -404,21 +404,25 @@ func UpdateQuiz(name string, q *temp.QuizUpdate) (err error) {
 	return errors.New("quiz not exist")
 }
 
-func SearchForQuiz(key string) (map[string]*Quiz, error) {
+func SearchForQuiz(userID, key string) (map[string]*ResQuiz, error) {
 	res, err := index.Search(key)
 	if err != nil {
 		return nil, err
 	}
 	var qs []*Quiz_
-	quizzes := make(map[string]*Quiz)
+	quizzes := make(map[string]*ResQuiz)
 	err = res.UnmarshalHits(&qs)
 	if err != nil {
 		return nil, err
 	}
 	for _, q := range qs {
-		quiz := &Quiz{
+		quiz := &ResQuiz{
 			Name:             q.Name,
 			NumberOfQuestion: q.NumberOfQuestion,
+			Playing: false,
+		}
+		if Playing(userID, q.ObjectID) {
+			quiz.Playing = true
 		}
 		quizzes[q.ObjectID] = quiz
 	}
