@@ -60,7 +60,12 @@ func (o *HostController) Get() {
 func (o *HostController) Start() {
 	code := o.Ctx.Input.Param(":code")
 	err := models.StartGame(code)
-	o.Data["json"] = err
+	if err != nil {
+		o.Data["json"] = err
+		o.ServeJSON()
+		return
+	}
+	o.Data["json"] = "success"
 	o.ServeJSON()
 }
 
