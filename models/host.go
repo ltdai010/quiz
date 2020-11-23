@@ -23,6 +23,7 @@ const host = "host"
 
 type Host struct {
 	QuizID         string
+	Started		   bool
 	Owner          string
 	MapParticipant map[string]string
 	MapScore       map[string]int
@@ -69,12 +70,14 @@ func init() {
 func AddHost(ht Host) string {
 	code := generateCode()
 	s := fmt.Sprint(code)
+	ht.Started = false
 	_, err := client.Collection(host).Doc(s).Set(ctx, ht)
 	if err != nil {
 		log.Fatalf("Failed adding alovelace: %v", err)
 	}
 	return s
 }
+
 
 func GetHostInfo(ctx context.Context, ref *firestore.DocumentRef) (*firestore.DocumentSnapshot, error) {
 	doc, err := ref.Get(ctx)
@@ -140,10 +143,26 @@ func PostScore(code string, score int, userID string) error {
 	return err
 }
 
-func AddUserToHost(code string, userID string, username string) error {
+func StartGame(code string) error {
 	_, err := client.Collection(host).Doc(code).Set(ctx, map[string]interface{}{
+		"Started" : true,
+	})
+	return err
+}
+
+func JoinHost(code string, userID string) error {
+	doc, err := client.Collection(USER).Doc(userID).Get(ctx)
+	if err != nil {
+		return err
+	}
+	u := User{}
+	err = doc.DataTo(&u)
+	if err != nil {
+		return err
+	}
+	_, err = client.Collection(host).Doc(code).Set(ctx, map[string]interface{}{
 		"MapParticipant": map[string]string{
-			userID: username,
+			userID: u.UserName,
 		},
 	}, firestore.MergeAll)
 	return err

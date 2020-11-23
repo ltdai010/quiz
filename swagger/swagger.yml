@@ -11,33 +11,6 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 basePath: /v1
 paths:
-  /host/{code}/AddUser:
-    post:
-      tags:
-      - host
-      description: create object
-      operationId: HostController.AddUser
-      parameters:
-      - in: path
-        name: code
-        description: The host code
-        required: true
-        type: string
-      - in: query
-        name: userID
-        description: The user code
-        required: true
-        type: string
-      - in: query
-        name: username
-        description: The username
-        required: true
-        type: string
-      responses:
-        "200":
-          description: '{string} success'
-        "403":
-          description: body is empty
   /host/{code}/PostScore:
     post:
       tags:
@@ -64,6 +37,28 @@ paths:
       responses:
         "200":
           description: '{string} models.Host.Name'
+        "403":
+          description: body is empty
+  /host/{code}/join:
+    post:
+      tags:
+      - host
+      description: create object
+      operationId: HostController.JoinHost
+      parameters:
+      - in: path
+        name: code
+        description: The host code
+        required: true
+        type: string
+      - in: query
+        name: userID
+        description: The user code
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} success'
         "403":
           description: body is empty
   /host/DeleteAHost/{Id}:
@@ -100,19 +95,6 @@ paths:
           description: '{code} models.Host'
         "403":
           description: :code is empty
-  /host/GetALlHost:
-    get:
-      tags:
-      - host
-      description: get all objects
-      operationId: HostController.GetAll
-      responses:
-        "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/models.Host'
-        "403":
-          description: :objectId is empty
   /host/PostHost:
     post:
       tags:
@@ -131,31 +113,23 @@ paths:
           description: '{string} models.Host.Name'
         "403":
           description: body is empty
-  /host/UpdateAHost/{hostId}:
-    put:
+  /host/start/{code}:
+    post:
       tags:
       - host
-      description: update the object
-      operationId: HostController.Update
+      description: start host
+      operationId: HostController.Start
       parameters:
       - in: path
-        name: hostId
-        description: The host you want to update
+        name: code
+        description: The object content
         required: true
         type: string
-      - in: body
-        name: body
-        description: The body
-        required: true
-        schema:
-          $ref: '#/definitions/models.Host'
       responses:
         "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/models.Host'
+          description: '{string} models.Host.Name'
         "403":
-          description: :hostId is empty
+          description: body is empty
   /quiz/DeleteDoneQuiz/{doneQuizID}:
     delete:
       tags:
@@ -832,6 +806,8 @@ definitions:
         type: string
       QuizID:
         type: string
+      Started:
+        type: boolean
   models.Question:
     title: Question
     type: object

@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"log"
 	"quiz/models"
 	"strconv"
 
@@ -41,7 +40,6 @@ func (o *HostController) Post() {
 func (o *HostController) Get() {
 	objectId := o.Ctx.Input.Param(":code")
 	code, err := strconv.Atoi(objectId)
-	log.Println(code)
 	if err == nil {
 		ob, err := models.GetOne(code)
 		if err != nil {
@@ -53,38 +51,16 @@ func (o *HostController) Get() {
 	o.ServeJSON()
 }
 
-// @Title GetAll
-// @Description get all objects
-// @Success 200 {object} models.Host
-// @Failure 403 :objectId is empty
-// @router /GetALlHost [get]
-func (o *HostController) GetAll() {
-	obs := models.GetAllHost()
-	o.Data["json"] = obs
-	o.ServeJSON()
-}
-
-// @Title Update
-// @Description update the object
-// @Param	hostId		path 	string	true		"The host you want to update"
-// @Param	body		body 	models.Host	true		"The body"
-// @Success 200 {object} models.Host
-// @Failure 403 :hostId is empty
-// @router /UpdateAHost/:hostId [put]
-func (o *HostController) Put() {
-	objectId := o.Ctx.Input.Param(":hostId")
-	code, err := strconv.Atoi(objectId)
-	if err != nil {
-		o.Data["json"] = err.Error()
-	}
-	var ob models.Host
-	json.Unmarshal(o.Ctx.Input.RequestBody, &ob)
-	err = models.Update(code, &ob)
-	if err != nil {
-		o.Data["json"] = err.Error()
-	} else {
-		o.Data["json"] = "update success!"
-	}
+// @Title Start
+// @Description start host
+// @Param	code		path 	string	true		"The object content"
+// @Success 200 {string} models.Host.Name
+// @Failure 403 body is empty
+// @router /start/:code [post]
+func (o *HostController) Start() {
+	code := o.Ctx.Input.Param(":code")
+	err := models.StartGame(code)
+	o.Data["json"] = err
 	o.ServeJSON()
 }
 
@@ -105,19 +81,18 @@ func (o *HostController) Delete() {
 	o.ServeJSON()
 }
 
-// @Title AddUser
+
+// @Title JoinHost
 // @Description create object
 // @Param	code		path 	string	true		"The host code"
 // @Param	userID		query	string	true		"The user code"
-// @Param	username	query	string	true		"The username"
 // @Success 200 {string} success
 // @Failure 403 body is empty
-// @router /:code/AddUser [post]
-func (o *HostController) AddUser() {
+// @router /:code/join [post]
+func (o *HostController) JoinHost() {
 	code := o.Ctx.Input.Param(":code")
 	userID := o.GetString("userID")
-	username := o.GetString("username")
-	err := models.AddUserToHost(code, userID, username)
+	err := models.JoinHost(code, userID)
 	if err != nil {
 		o.Ctx.WriteString(err.Error())
 		return

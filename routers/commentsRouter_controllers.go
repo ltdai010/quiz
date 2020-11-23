@@ -9,8 +9,8 @@ func init() {
 
     beego.GlobalControllerRouter["quiz/controllers:HostController"] = append(beego.GlobalControllerRouter["quiz/controllers:HostController"],
         beego.ControllerComments{
-            Method: "AddUser",
-            Router: "/:code/AddUser",
+            Method: "PostScore",
+            Router: "/:code/PostScore",
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -18,8 +18,8 @@ func init() {
 
     beego.GlobalControllerRouter["quiz/controllers:HostController"] = append(beego.GlobalControllerRouter["quiz/controllers:HostController"],
         beego.ControllerComments{
-            Method: "PostScore",
-            Router: "/:code/PostScore",
+            Method: "JoinHost",
+            Router: "/:code/join",
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -45,15 +45,6 @@ func init() {
 
     beego.GlobalControllerRouter["quiz/controllers:HostController"] = append(beego.GlobalControllerRouter["quiz/controllers:HostController"],
         beego.ControllerComments{
-            Method: "GetAll",
-            Router: "/GetALlHost",
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["quiz/controllers:HostController"] = append(beego.GlobalControllerRouter["quiz/controllers:HostController"],
-        beego.ControllerComments{
             Method: "Post",
             Router: "/PostHost",
             AllowHTTPMethods: []string{"post"},
@@ -63,9 +54,9 @@ func init() {
 
     beego.GlobalControllerRouter["quiz/controllers:HostController"] = append(beego.GlobalControllerRouter["quiz/controllers:HostController"],
         beego.ControllerComments{
-            Method: "Put",
-            Router: "/UpdateAHost/:hostId",
-            AllowHTTPMethods: []string{"put"},
+            Method: "Start",
+            Router: "/start/:code",
+            AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})

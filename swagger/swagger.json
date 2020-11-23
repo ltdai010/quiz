@@ -67,26 +67,6 @@
                 }
             }
         },
-        "/host/GetALlHost": {
-            "get": {
-                "tags": [
-                    "host"
-                ],
-                "description": "get all objects",
-                "operationId": "HostController.GetAll",
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.Host"
-                        }
-                    },
-                    "403": {
-                        "description": ":objectId is empty"
-                    }
-                }
-            }
-        },
         "/host/PostHost": {
             "post": {
                 "tags": [
@@ -115,77 +95,25 @@
                 }
             }
         },
-        "/host/UpdateAHost/{hostId}": {
-            "put": {
-                "tags": [
-                    "host"
-                ],
-                "description": "update the object",
-                "operationId": "HostController.Update",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "hostId",
-                        "description": "The host you want to update",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "The body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Host"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.Host"
-                        }
-                    },
-                    "403": {
-                        "description": ":hostId is empty"
-                    }
-                }
-            }
-        },
-        "/host/{code}/AddUser": {
+        "/host/start/{code}": {
             "post": {
                 "tags": [
                     "host"
                 ],
-                "description": "create object",
-                "operationId": "HostController.AddUser",
+                "description": "start host",
+                "operationId": "HostController.Start",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "code",
-                        "description": "The host code",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "userID",
-                        "description": "The user code",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "username",
-                        "description": "The username",
+                        "description": "The object content",
                         "required": true,
                         "type": "string"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{string} success"
+                        "description": "{string} models.Host.Name"
                     },
                     "403": {
                         "description": "body is empty"
@@ -227,6 +155,39 @@
                 "responses": {
                     "200": {
                         "description": "{string} models.Host.Name"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/host/{code}/join": {
+            "post": {
+                "tags": [
+                    "host"
+                ],
+                "description": "create object",
+                "operationId": "HostController.JoinHost",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "code",
+                        "description": "The host code",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "userID",
+                        "description": "The user code",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} success"
                     },
                     "403": {
                         "description": "body is empty"
@@ -1262,6 +1223,9 @@
                 },
                 "QuizID": {
                     "type": "string"
+                },
+                "Started": {
+                    "type": "boolean"
                 }
             }
         },
