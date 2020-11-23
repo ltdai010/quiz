@@ -71,6 +71,8 @@ func AddHost(ht Host) string {
 	code := generateCode()
 	s := fmt.Sprint(code)
 	ht.Started = false
+	ht.MapParticipant = map[string]string{}
+	ht.MapScore = map[string]int{}
 	_, err := client.Collection(host).Doc(s).Set(ctx, ht)
 	if err != nil {
 		log.Fatalf("Failed adding alovelace: %v", err)
