@@ -135,9 +135,21 @@ func Update(code int, h *Host) (err error) {
 }
 
 func PostScore(code string, score int, userID string) error {
-	_, err := client.Collection(host).Doc(code).Set(ctx, map[string]interface{}{
-		"MapScore": map[string]int{
-			userID: score,
+	doc, err := client.Collection(USER).Doc(userID).Get(ctx)
+	if err != nil {
+		return err
+	}
+	u := User{}
+	err = doc.DataTo(&u)
+	if err != nil {
+		return err
+	}
+	_, err = client.Collection(host).Doc(code).Set(ctx, map[string]interface{}{
+		"MapScore": map[string]map[string]interface{}{
+			userID: {
+				"username" : u.UserName,
+				"score"	   : score,
+			},
 		},
 	}, firestore.MergeAll)
 	return err

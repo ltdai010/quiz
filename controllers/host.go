@@ -104,8 +104,8 @@ func (o *HostController) JoinHost() {
 // @Title PostScore
 // @Description create object
 // @Param	code		path 	string	true		"The host code"
-// @Param	score		query	int		true		"The user code"
-// @Param	username	query	string	true		"The username"
+// @Param	score		query	int		true		"The code"
+// @Param	userID	query	string	true		"The userID"
 // @Success 200 {string} models.Host.Name
 // @Failure 403 body is empty
 // @router /:code/PostScore [post]
@@ -116,8 +116,8 @@ func (o *HostController) PostScore() {
 		o.Ctx.WriteString(err.Error())
 		return
 	}
-	username := o.GetString("username")
-	err = models.PostScore(code, score, username)
+	userID := o.GetString("userID")
+	err = models.PostScore(code, score, userID)
 	if err != nil {
 		o.Ctx.WriteString(err.Error())
 		return

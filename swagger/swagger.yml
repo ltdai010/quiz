@@ -25,13 +25,13 @@ paths:
         type: string
       - in: query
         name: score
-        description: The user code
+        description: The code
         required: true
         type: integer
         format: int64
       - in: query
-        name: username
-        description: The username
+        name: userID
+        description: The userID
         required: true
         type: string
       responses:
