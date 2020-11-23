@@ -56,7 +56,7 @@ func (o *HostController) Get() {
 // @Param	code		path 	string	true		"The object content"
 // @Success 200 {string} models.Host.Name
 // @Failure 403 body is empty
-// @router /start/:code [post]
+// @router /start/:code [put]
 func (o *HostController) Start() {
 	code := o.Ctx.Input.Param(":code")
 	err := models.StartGame(code)

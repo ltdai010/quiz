@@ -96,7 +96,7 @@
             }
         },
         "/host/start/{code}": {
-            "post": {
+            "put": {
                 "tags": [
                     "host"
                 ],

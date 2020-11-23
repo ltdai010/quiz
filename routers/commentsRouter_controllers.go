@@ -56,7 +56,7 @@ func init() {
         beego.ControllerComments{
             Method: "Start",
             Router: "/start/:code",
-            AllowHTTPMethods: []string{"post"},
+            AllowHTTPMethods: []string{"put"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})

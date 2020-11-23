@@ -114,7 +114,7 @@ paths:
         "403":
           description: body is empty
   /host/start/{code}:
-    post:
+    put:
       tags:
       - host
       description: start host
