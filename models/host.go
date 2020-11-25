@@ -174,6 +174,12 @@ func JoinHost(code string, userID string) error {
 	if err != nil {
 		return err
 	}
+	//check exist
+	_, err = client.Collection(host).Doc(code).Get(ctx)
+	if err != nil {
+		return err
+	}
+	//update
 	_, err = client.Collection(host).Doc(code).Set(ctx, map[string]interface{}{
 		"MapParticipant": map[string]string{
 			userID: u.UserName,
