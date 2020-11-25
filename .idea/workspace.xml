@@ -22,7 +22,6 @@
     <list default="true" id="ebc42cfe-e6c2-487d-a1c3-987d0bc0e18b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/host.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/host.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quiz" beforeDir="false" afterPath="$PROJECT_DIR$/quiz" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,6 +86,10 @@
     <integration-enabled>true</integration-enabled>
   </component>
   <component name="WindowStateProjectService">
+    <state x="621" y="341" width="668" height="438" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1606298757687">
+      <screen x="0" y="34" width="1920" height="1046" />
+    </state>
+    <state x="621" y="341" width="668" height="438" key="#com.intellij.fileTypes.FileTypeChooser/0.34.1920.1046@0.34.1920.1046" timestamp="1606298757687" />
     <state x="690" y="254" width="530" height="605" key="FileChooserDialogImpl" timestamp="1601885601691">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>

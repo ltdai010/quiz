@@ -70,10 +70,19 @@ func init() {
 func AddHost(ht Host) string {
 	code := generateCode()
 	s := fmt.Sprint(code)
+	doc, err := client.Collection(USER).Doc(ht.Owner).Get(ctx)
+	if err != nil {
+		return err.Error()
+	}
+	name, err := doc.DataAt("UserName")
+	if err != nil {
+		return err.Error()
+	}
 	ht.Started = false
 	ht.MapParticipant = map[string]string{}
+	ht.MapParticipant[ht.Owner] = name.(string)
 	ht.MapScore = map[string]int{}
-	_, err := client.Collection(host).Doc(s).Set(ctx, ht)
+	_, err = client.Collection(host).Doc(s).Set(ctx, ht)
 	if err != nil {
 		log.Fatalf("Failed adding alovelace: %v", err)
 	}
