@@ -169,7 +169,7 @@ func PostScore(code string, score int, userID string) error {
 func StartGame(code string) error {
 	_, err := client.Collection(host).Doc(code).Set(ctx, map[string]interface{}{
 		"Started" : true,
-	})
+	}, firestore.MergeAll)
 	return err
 }
 
